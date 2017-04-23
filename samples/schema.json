@@ -1,0 +1,59 @@
+{
+  "propertyKeys": [
+    {"name": "name", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "verified", "dataType": "Boolean", "cardinality": "SINGLE"},
+    {"name": "tweet", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "sentiment", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "tone", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "hashtag", "dataType": "String", "cardinality": "SINGLE"},
+    {"name": "numTimes", "dataType": "Integer", "cardinality": "SINGLE"},
+    {"name": "time", "dataType": "String", "cardinality": "SINGLE"}
+  ],
+  "vertexLabels": [
+    {"name": "person"},
+    {"name": "hashtag"},
+    {"name": "tweet"}
+  ],
+  "edgeLabels": [
+    {"name": "mentions", "multiplicity": "MULTI"},
+    {"name": "hashes", "multiplicity": "MULTI"},
+    {"name": "tweets", "multiplicity": "MULTI"},
+    {"name": "favorites", "multiplicity": "MULTI"}
+  ],
+  "vertexIndexes": [
+    {"name": "vByName",
+      "propertyKeys": ["name"],
+      "composite": true,
+      "unique": true},
+    {"name": "vByVerified",
+      "propertyKeys": ["verified"],
+      "composite": true,
+      "unique": false},
+    {"name": "vBySentiment",
+      "propertyKeys": ["sentiment"],
+      "composite": true,
+      "unique": false},
+    {"name": "vByTone",
+      "propertyKeys": ["tone"],
+      "composite": true,
+      "unique": false},
+    {"name": "vByTweet",
+      "propertyKeys": ["tweet"],
+      "composite": true,
+      "unique": false},
+    {"name": "vByHashtag",
+      "propertyKeys": ["hashtag"],
+      "composite": true,
+      "unique": true},
+    {"name": "vByNumTimes",
+      "propertyKeys": ["numTimes"],
+      "composite": true,
+      "unique": false}
+  ],
+  "edgeIndexes" :[
+    {"name": "eByTime",
+      "propertyKeys": ["time"],
+      "composite": true,
+      "unique": false}
+  ]
+}
