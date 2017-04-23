@@ -1,3 +1,6 @@
+import java.util.Date
+import java.util.UUID
+
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.shaded.jackson.databind.ObjectMapper;
@@ -7,6 +10,7 @@ import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder;
+import org.janusgraph.core.attribute.Geoshape;
 
 /**
  * A utility class to read GraphSON schema document and write to JanusGraph
@@ -14,6 +18,27 @@ import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder;
 class JanusgraphGSONSchema {
     private JanusGraph graph;
     private File gsonFile;
+    private static HashMap<String, Class> sTypeMap = new HashMap();
+
+    /**
+     * Create the data type mapping table here
+     * note: can't find the corresponding classes for:
+     *       Decimal and Precision
+     */
+    static {
+        sTypeMap.put("String", String.class);
+        sTypeMap.put("Character", Character.class);
+        sTypeMap.put("Boolean", Boolean.class);
+        sTypeMap.put("Byte", Byte.class);
+        sTypeMap.put("Short", Short.class);
+        sTypeMap.put("Integer", Integer.class);
+        sTypeMap.put("Long", Long.class);
+        sTypeMap.put("Float", Float.class);
+        sTypeMap.put("Geoshape", Geoshape.class);
+        sTypeMap.put("UUID", UUID.class);
+        sTypeMap.put("Date", Date.class);
+
+    }
 
     /**
      * Constructor of JansugraphGSONSchema object with the {@code graph}
@@ -54,9 +79,13 @@ class JanusgraphGSONSchema {
             if (mgmt.containsPropertyKey(name)) {
                 println "property: ${name} exists";
             } else {
-                mgmt.makePropertyKey(node.get("name").asText())
-                        .dataType(Class.forName("java.lang." + node.get("dataType").asText()))
+                try {
+                    mgmt.makePropertyKey(node.get("name").asText())
+                        .dataType(sTypeMap.get(node.get("dataType").asText()))
                         .cardinality(Cardinality.valueOf(node.get("cardinality").asText())).make();
+                } catch (Exception e) {
+                    println "can't create property:${name}, ${e.getMessage()}";
+                }
             }
         }
 
@@ -65,7 +94,11 @@ class JanusgraphGSONSchema {
             if (mgmt.containsVertexLabel(name)) {
                 println "vertex: ${name} exists";
             } else {
-                mgmt.makeVertexLabel(name).make();
+                try {
+                    mgmt.makeVertexLabel(name).make();
+                } catch (Exception e) {
+                    println "can't create vertex: ${name}, ${e.getMessage()}";
+                }
             }
         }
 
@@ -74,7 +107,11 @@ class JanusgraphGSONSchema {
             if (mgmt.containsEdgeLabel(name)) {
                 println "edge: ${name} exists";
             } else {
-                mgmt.makeEdgeLabel(name).make();
+                try {
+                    mgmt.makeEdgeLabel(name).make();
+                } catch (Exception e) {
+                    println "cant't create edge: ${name}, ${e.getMessage()}";
+                }
             }
         }
 
@@ -115,22 +152,26 @@ class JanusgraphGSONSchema {
             return;
         }
 
-        IndexBuilder ib = mgmt.buildIndex(node.get("name").asText(), isVertexIndex ? Vertex.class : Edge.class);
-        List<TextNode> properties = node.get("propertyKeys").asList();
-        for (property in properties) {
-            ib.addKey(mgmt.getPropertyKey(property.asText()));
-        }
+        try {
+            IndexBuilder ib = mgmt.buildIndex(node.get("name").asText(), isVertexIndex ? Vertex.class : Edge.class);
+            List<TextNode> properties = node.get("propertyKeys").asList();
+            for (property in properties) {
+                ib.addKey(mgmt.getPropertyKey(property.asText()));
+            }
 
-        if (node.has("unique") && node.get("unique").asBoolean()) {
-            ib.unique();
-        }
+            if (node.has("unique") && node.get("unique").asBoolean()) {
+                ib.unique();
+            }
 
-        if (node.has("composite") && node.get("composite").asBoolean()) {
-            ib.buildCompositeIndex();
-        }
+            if (node.has("composite") && node.get("composite").asBoolean()) {
+                ib.buildCompositeIndex();
+            }
 
-        if (node.has("mixedIndex")) {
-            ib.buildMixedIndex(node.get("mixedIndex").asText());
+            if (node.has("mixedIndex")) {
+                ib.buildMixedIndex(node.get("mixedIndex").asText());
+            }
+        } catch (Exception e) {
+            println "can't create index: ${name}, ${e.getMessage()}";
         }
     }
 }
