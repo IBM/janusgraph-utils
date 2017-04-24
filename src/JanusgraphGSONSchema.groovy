@@ -9,6 +9,7 @@ import org.apache.tinkerpop.shaded.jackson.databind.node.TextNode
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
+import org.janusgraph.core.schema.JanusGraphSchemaType
 import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder;
 import org.janusgraph.core.attribute.Geoshape;
 
@@ -16,9 +17,9 @@ import org.janusgraph.core.attribute.Geoshape;
  * A utility class to read GraphSON schema document and write to JanusGraph
  */
 class JanusgraphGSONSchema {
-    private JanusGraph graph;
-    private File gsonFile;
-    private static HashMap<String, Class> sTypeMap = new HashMap();
+    JanusGraph graph
+    File gsonFile
+    static HashMap<String, Class> sTypeMap = new HashMap()
 
     /**
      * Create the data type mapping table here
@@ -46,9 +47,9 @@ class JanusgraphGSONSchema {
      */
     public JanusgraphGSONSchema(JanusGraph graph) {
         if (!graph) {
-            throw new Exception("JanusGraph is null");
+            throw new Exception("JanusGraph is null")
         }
-        this.graph = graph;
+        this.graph = graph
     }
 
     /**
@@ -58,81 +59,81 @@ class JanusgraphGSONSchema {
      *        IBM Graph GraphSON schema format.
      */
     public void readFile(String gsonSchemaFile) {
-        gsonFile = new File(gsonSchemaFile);
-        ObjectNode root = null;
+        gsonFile = new File(gsonSchemaFile)
+        ObjectNode root = null
 
         if (!gsonFile.exists()) {
-            throw new Exception("file not found:" + gsonSchemaFile);
+            throw new Exception("file not found:" + gsonSchemaFile)
         }
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            root = mapper.readTree(gsonFile);
+            ObjectMapper mapper = new ObjectMapper()
+            root = mapper.readTree(gsonFile)
         } catch (Exception e) {
-            throw new Exception("can't parse GSON file:" + e.getMessage());
+            throw new Exception("can't parse GSON file:" + e.getMessage())
         }
 
-        JanusGraphManagement mgmt = graph.openManagement();
+        JanusGraphManagement mgmt = graph.openManagement()
 
         for (node in root.get("propertyKeys").asList()) {
-            String name = node.get("name").asText();
+            String name = node.get("name").asText()
             if (mgmt.containsPropertyKey(name)) {
-                println "property: ${name} exists";
+                println "property: ${name} exists"
             } else {
                 try {
                     mgmt.makePropertyKey(node.get("name").asText())
                         .dataType(sTypeMap.get(node.get("dataType").asText()))
                         .cardinality(Cardinality.valueOf(node.get("cardinality").asText())).make();
                 } catch (Exception e) {
-                    println "can't create property:${name}, ${e.getMessage()}";
+                    println "can't create property:${name}, ${e.getMessage()}"
                 }
             }
         }
 
         for (vertex in root.get("vertexLabels").asList()) {
-            String name = vertex.get("name").asText();
+            String name = vertex.get("name").asText()
             if (mgmt.containsVertexLabel(name)) {
-                println "vertex: ${name} exists";
+                println "vertex: ${name} exists"
             } else {
                 try {
                     mgmt.makeVertexLabel(name).make();
                 } catch (Exception e) {
-                    println "can't create vertex: ${name}, ${e.getMessage()}";
+                    println "can't create vertex: ${name}, ${e.getMessage()}"
                 }
             }
         }
 
         for (edge in root.get("edgeLabels").asList()) {
-            String name = edge.get("name").asText();
+            String name = edge.get("name").asText()
             if (mgmt.containsEdgeLabel(name)) {
-                println "edge: ${name} exists";
+                println "edge: ${name} exists"
             } else {
                 try {
                     mgmt.makeEdgeLabel(name).make();
                 } catch (Exception e) {
-                    println "cant't create edge: ${name}, ${e.getMessage()}";
+                    println "cant't create edge: ${name}, ${e.getMessage()}"
                 }
             }
         }
 
         for (vindex in root.get("vertexIndexes").asList()) {
-            makeIndex(mgmt, vindex, true);
+            makeIndex(mgmt, vindex, true)
         }
 
         for (eindex in root.get("edgeIndexes").asList()) {
-            makeIndex(mgmt, eindex, false);
+            makeIndex(mgmt, eindex, false)
         }
 
-        mgmt.commit();
+        mgmt.commit()
     }
 
     private void make(List<ObjectNode> nodes, String name, Closure check, Closure exist, Closure create) {
         for (node in nodes) {
-            String nameStr = node.get(name).asText();
+            String nameStr = node.get(name).asText()
             if (check.call(nameStr)) {
-                exist.call(nameStr);
+                exist.call(nameStr)
             } else {
-                create.call(nameStr, node);
+                create.call(nameStr, node)
             }
         }
     }
@@ -146,32 +147,45 @@ class JanusgraphGSONSchema {
      * @param isVertexIndex create a vertex index or edge index
      */
     private void makeIndex(JanusGraphManagement mgmt, ObjectNode node, boolean isVertexIndex) {
-        String name = node.get("name").asText();
+        String name = node.get("name").asText()
         if (mgmt.containsGraphIndex(name)) {
-            println "index: ${name} exists";
-            return;
+            println "index: ${name} exists"
+            return
         }
 
-        try {
-            IndexBuilder ib = mgmt.buildIndex(node.get("name").asText(), isVertexIndex ? Vertex.class : Edge.class);
-            List<TextNode> properties = node.get("propertyKeys").asList();
-            for (property in properties) {
-                ib.addKey(mgmt.getPropertyKey(property.asText()));
+        IndexBuilder ib = mgmt.buildIndex(node.get("name").asText(), isVertexIndex ? Vertex.class : Edge.class);
+        List<TextNode> properties = node.get("propertyKeys").asList()
+        for (property in properties) {
+            ib.addKey(mgmt.getPropertyKey(property.asText()))
+        }
+
+        if (node.has("unique") && node.get("unique").asBoolean()) {
+            ib.unique()
+        }
+
+        //indexOnly
+        if (node.has("only")) {
+            JanusGraphSchemaType key = null
+            String onlyName = node.get("only").asText()
+            if (isVertexIndex) {
+                key = mgmt.getVertexLabel(onlyName)
+            } else {
+                key = mgmt.getEdgeLabel(onlyName)
             }
 
-            if (node.has("unique") && node.get("unique").asBoolean()) {
-                ib.unique();
+            if (key == null) {
+                println "${onlyName} doesn't exist, skip only property"
+            } else {
+                ib.indexOnly(key)
             }
+        }
 
-            if (node.has("composite") && node.get("composite").asBoolean()) {
-                ib.buildCompositeIndex();
-            }
+        if (node.has("composite") && node.get("composite").asBoolean()) {
+            ib.buildCompositeIndex()
+        }
 
-            if (node.has("mixedIndex")) {
-                ib.buildMixedIndex(node.get("mixedIndex").asText());
-            }
-        } catch (Exception e) {
-            println "can't create index: ${name}, ${e.getMessage()}";
+        if (node.has("mixedIndex")) {
+            ib.buildMixedIndex(node.get("mixedIndex").asText())
         }
     }
 }

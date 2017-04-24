@@ -25,6 +25,11 @@
       "propertyKeys": ["name"],
       "composite": true,
       "unique": true},
+    {"name": "vByNamePersion",
+      "propertyKeys": ["name"],
+      "composite": true,
+      "unique": true,
+      "only": "person"},
     {"name": "vByVerified",
       "propertyKeys": ["verified"],
       "composite": true,
@@ -54,6 +59,11 @@
     {"name": "eByTime",
       "propertyKeys": ["time"],
       "composite": true,
-      "unique": false}
+      "unique": false},
+    {"name": "eByTimeMentions",
+      "propertyKeys": ["time"],
+      "composite": true,
+      "unique": false,
+      "only": "mentions"}
   ]
 }
