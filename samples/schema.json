@@ -65,5 +65,12 @@
       "composite": true,
       "unique": false,
       "only": "mentions"}
+  ],
+  "vertexCentricIndexes" :[
+    {"name": "vcByTime",
+      "propertyKeys": ["time"],
+      "edge": "mentions",
+      "direction": "BOTH",
+      "order": "incr"}
   ]
 }
