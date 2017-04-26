@@ -17,7 +17,7 @@
   "edgeLabels": [
     {"name": "mentions", "multiplicity": "MULTI"},
     {"name": "hashes", "multiplicity": "MULTI"},
-    {"name": "tweets", "multiplicity": "MULTI"},
+    {"name": "tweets", "multiplicity": "MULTI", "signatures": ["tweet"], "unidirected": true},
     {"name": "favorites", "multiplicity": "MULTI"}
   ],
   "vertexIndexes": [
@@ -29,7 +29,7 @@
       "propertyKeys": ["name"],
       "composite": true,
       "unique": true,
-      "only": "person"},
+      "indexOnly": "person"},
     {"name": "vByVerified",
       "propertyKeys": ["verified"],
       "composite": true,
@@ -58,13 +58,12 @@
   "edgeIndexes" :[
     {"name": "eByTime",
       "propertyKeys": ["time"],
-      "composite": true,
-      "unique": false},
+      "composite": true},
     {"name": "eByTimeMentions",
       "propertyKeys": ["time"],
       "composite": true,
       "unique": false,
-      "only": "mentions"}
+      "indexOnly": "mentions"}
   ],
   "vertexCentricIndexes" :[
     {"name": "vcByTime",
