@@ -20,12 +20,17 @@ The Benchmark tool for JanusGraph performance
 	5. Index
 		* which key should be indexed?
 		* types of index (composite or mixed)?
+		* start with 2 properites first. 1 compostie and 1 mixed
 	
 ###Performance Metric:
 	1. How fast can we do these types of transactions (With pre-defined default or customized transaction scenarios):
+		* Bulk Import data
+		* Concurrent Query (How to drive? See options below)
+			- Define own test queries here. For example:
+				- List all the edges of all vertices
+				- List all vertices with certain properties
 		* create vertices
 		* create Edges
-		* Query (How to drive? See options below)
 		- delete?
 		- update?
 		- Insert(same as create vertices?)
@@ -43,8 +48,7 @@ The Benchmark tool for JanusGraph performance
 	
 ###Hardware
 ####Single node:
-	* 1 x cassandra (composit index)
-	- 1 x cassandra + ES (with mixed index)
+	* 1 x cassandra + ES (1 composit index + 1 mixed inedex)
 ####Multiple nodes:
 	* Cluster of 3 cassandra later?
 	- Other data store? (hbase)
