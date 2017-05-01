@@ -16,7 +16,7 @@ The Benchmark tool for JanusGraph performance
 		* Number of properties for:
 		  - vertices(look at some existing data)
 		  - edges(look at some existing data)
-		* data types
+		* data types (use String and Integer first)
 	5. Index
 		* which key should be indexed?
 		* types of index (composite or mixed)?
@@ -24,7 +24,7 @@ The Benchmark tool for JanusGraph performance
 	
 ###Performance Metric:
 	1. How fast can we do these types of transactions (With pre-defined default or customized transaction scenarios):
-		* Bulk Import data
+		* Importing data (define what's a transacation? insert vertex, create edges?)
 		* Concurrent Query (How to drive? See options below)
 			- Define own test queries here. For example:
 				- List all the edges of all vertices
