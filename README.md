@@ -6,14 +6,16 @@ The Benchmark tool for JanusGraph performance
 	1. Vertices:
 		* label names
 		* Number of different label types
+		* size (small, medium, large)
 	2. Edges:
 		* label names
 		* Number of different label types
+		* size (small, medium, large)
 	3. Relation(Edge) pattern?
 	4. Properties
 		* Number of properties for:
-		  - vertices
-		  - edges
+		  - vertices(look at some existing data)
+		  - edges(look at some existing data)
 		* data types
 	5. Index
 		* which key should be indexed?
@@ -23,7 +25,7 @@ The Benchmark tool for JanusGraph performance
 	1. How fast can we do these types of transactions (With pre-defined default or customized transaction scenarios):
 		* create vertices
 		* create Edges
-		* Query
+		* Query (How to drive? See options below)
 		- delete?
 		- update?
 		- Insert(same as create vertices?)
