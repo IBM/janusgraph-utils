@@ -4,35 +4,35 @@ The Benchmark tool for JanusGraph performance
 ###Populate entire graphdb with a configuration json. 
 #####We should provide a default configuration that specify these elements (* is for now):  
 	1. Vertices:
-		* label name
+		* label names
 		* Number of different label types
 	2. Edges:
-		* Edge label names
+		* label names
 		* Number of different label types
 	3. Relation(Edge) pattern?
 	4. Properties
-		* Number of properties
-		  - vertex
+		* Number of properties for:
+		  - vertices
 		  - edges
 		* data types
 	5. Index
 		* which key should be indexed?
-		* types of index?
+		* types of index (composite or mixed)?
 	
 ###Performance Metric:
 	1. How fast can we do these types of transactions (With pre-defined default or customized transaction scenarios):
-		* create vertice
+		* create vertices
 		* create Edges
 		* Query
 		- delete?
 		- update?
-		- Insert(same as create vertice?)
+		- Insert(same as create vertices?)
 	2. Metric to measure:
 		* Avg. TPS
 		* Avg. KB/sec?(A vertex can have any # of properties and edges so its size can vary)
 		* Avg. latency
 	3. known variables:
-		- Transaction VS Threads(users)
+		- Transactions/sec VS Threads(users)
 		- Number of Transactions for each commit
 ###Monitor:
 	* nmon
@@ -46,7 +46,10 @@ The Benchmark tool for JanusGraph performance
 ####Multiple nodes:
 	* Cluster of 3 cassandra later?
 	- Other data store? (hbase)
-	
+###Which interface should the driver use to generate data and send queries:
+####Options:
+	* Send APIs through Gremlin servers (web socket or REST)?
+	* Stand alone Java Application?
 ###Codename:
 	- Hermes?
 ###Ohter tests:
