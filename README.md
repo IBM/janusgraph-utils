@@ -24,13 +24,15 @@ The Benchmark tool for JanusGraph performance
 	
 ###Performance Metric:
 	1. How fast can we do these types of transactions (With pre-defined default or customized transaction scenarios):
-		* Importing data (define what's a transacation? insert vertex, create edges?)
+		* Importing data
+			- Use Simeon's importer
+				- one csv for vertices: each line is a unique vertex
+				- one csv for edges: each line is a relation
 		* Concurrent Query (How to drive? See options below)
 			- Define own test queries here. For example:
 				- List all the edges of all vertices
 				- List all vertices with certain properties
-		* create vertices
-		* create Edges
+			- Drive using Simeon's despatcher through Gremlin server
 		- delete?
 		- update?
 		- Insert(same as create vertices?)
