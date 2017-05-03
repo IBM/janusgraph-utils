@@ -213,6 +213,10 @@ class IndexBean {
     }
 }
 
+/**
+ * represent the individual vertex-centric index object in the "vertexCentricIndexes"
+ * list
+ */
 class VertexCentricIndexBean {
     String name = null
     String edge = null
@@ -277,6 +281,63 @@ class VertexCentricIndexBean {
 }
 
 /**
+ * represents the whole GraphSON document. It contains:
+ * - propertyKeys
+ * - vertexLabels
+ * - edgeLabels
+ * - vertexIndexes
+ * - edgeIndexes
+ * - vertexCentricIndexes
+ */
+class GSONSchema {
+    List<PropertyKeyBean> propertyKeys;
+    List<VertexLabelBean> vertexLabels;
+    List<EdgeLabelBean> edgeLabels;
+    List<IndexBean> vertexIndexes;
+    List<IndexBean> edgeIndexes;
+    List<VertexCentricIndexBean> vertexCentricIndexes
+
+    /**
+     * use the {@code mgmt} to create the schema
+     * @param mgmt
+     */
+    public void make(JanusGraphManagement mgmt) {
+        //create properties
+        for (property in propertyKeys) {
+            property.make(mgmt)
+        }
+
+        //create vertex labels
+        for (vertex in vertexLabels) {
+            vertex.make(mgmt)
+        }
+
+        //create edge labels
+
+        for (edge in edgeLabels) {
+            edge.make(mgmt)
+        }
+
+        //create v indexes
+        for (vindex in vertexIndexes) {
+            vindex.make(mgmt, true)
+        }
+
+        //create e indexes
+        for (eindex in edgeIndexes) {
+            eindex.make(mgmt, false)
+        }
+
+        //create vc indexes
+        for (vcindex in vertexCentricIndexes) {
+            vcindex.make(mgmt)
+        }
+
+        mgmt.commit()
+    }
+}
+
+/**
  * A utility class to read GraphSON schema document and write to JanusGraph
  */
 class JanusgraphGSONSchema {
@@ -300,92 +361,31 @@ class JanusgraphGSONSchema {
      *        IBM Graph GraphSON schema format.
      */
     public void readFile(String gsonSchemaFile) {
+        JanusGraphManagement mgmt = graph.openManagement()
+
+        try {
+            parse(gsonSchemaFile)
+                .make(mgmt)
+        } catch (Exception e) {
+            print "parse GSON failed: ${e.getMessage()}"
+        }
+    }
+
+    /**
+     * Parse the GraphSON document and return a GSONSchema object
+     * if parse successes
+     * @param gsonSchemaFile
+     * @return
+     */
+    public GSONSchema parse(String gsonSchemaFile) {
         File gsonFile = new File(gsonSchemaFile)
-        ObjectNode root = null
 
         if (!gsonFile.exists()) {
             throw new Exception("file not found:" + gsonSchemaFile)
         }
 
         ObjectMapper mapper = new ObjectMapper()
-
-        try {
-            root = mapper.readTree(gsonFile)
-        } catch (Exception e) {
-            print "parse GSON failed: ${e.getMessage()}"
-            return
-        }
-
-        JanusGraphManagement mgmt = graph.openManagement()
-
-        if (root.has("propertyKeys")) {
-            for (node in root.get("propertyKeys").asList()) {
-                //use JSON ==> POJO in jackson-databind
-                try {
-                    mapper.convertValue(node, PropertyKeyBean.class)
-                        .make(mgmt)
-                } catch (Exception e) {
-                    println "incorrect propertyKey format: ${e.getMessage()}"
-                }
-            }
-        }
-
-        if (root.has("vertexLabels")) {
-            for (vertex in root.get("vertexLabels").asList()) {
-                try {
-                    mapper.convertValue(vertex, VertexLabelBean.class)
-                        .make(mgmt)
-                } catch (Exception e) {
-                    println "incorrect vertex label format: ${e.getMessage()}"
-                }
-            }
-        }
-
-        if (root.has("edgeLabels")) {
-            for (edge in root.get("edgeLabels").asList()) {
-                try {
-                    mapper.convertValue(edge, EdgeLabelBean.class)
-                        .make(mgmt)
-                } catch (Exception e) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        if (root.has("vertexIndexes")) {
-            for (vindex in root.get("vertexIndexes").asList()) {
-                try {
-                    mapper.convertValue(vindex, IndexBean.class)
-                        .make(mgmt, true)
-                } catch (Exception e) {
-                    println "incorrect vetex index format ${e.getMessage()}"
-                }
-            }
-        }
-
-        if (root.has("edgeIndexes")) {
-            for (eindex in root.get("edgeIndexes").asList()) {
-                try {
-                    mapper.convertValue(eindex, IndexBean.class)
-                        .make(mgmt, false)
-                } catch (Exception e) {
-                    println "incorrect edge index format: ${e.getMessage()}"
-                }
-            }
-        }
-
-        if (root.has("vertexCentricIndexes")) {
-            for (ecindex in root.get("vertexCentricIndexes").asList()) {
-                try {
-                    mapper.convertValue(ecindex, VertexCentricIndexBean.class)
-                        .make(mgmt)
-                } catch (Exception e) {
-                    println "incorrect vertex-centric index format: ${e.getMessage()}"
-                }
-            }
-        }
-
-        mgmt.commit()
+        return mapper.readValue(gsonFile, GSONSchema.class)
     }
 
     void make(List<ObjectNode> nodes, String name, Closure check, Closure exist, Closure create) {
@@ -398,6 +398,16 @@ class JanusgraphGSONSchema {
             }
         }
     }
+}
 
-
+/**
+ * parse the GraphSON schema in {@code schema} and write to
+ * {@code graph}
+ * @param graph a valid JanusGraph instance
+ * @param schema GraphSON schema document location
+ * @return
+ */
+def writeGraphSONSchema(graph, schema) {
+    JanusgraphGSONSchema importer = new JanusgraphGSONSchema(graph)
+    importer.readFile(schema)
 }
