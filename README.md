@@ -20,9 +20,7 @@ gremlin> :load JanusgraphGSONSchema.groovy
 ......
 ==>true
 ==>true
-gremlin> importer = new JanusgraphGSONSchema(graph)
-==>JanusgraphGSONSchema@e0e22f5
-gremlin> importer.readFile('schema.json')
+gremlin> writeGraphSONSchema(graph, 'schema.json')
 ```
 
 #### schema GSON
