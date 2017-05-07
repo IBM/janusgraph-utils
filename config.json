@@ -1,0 +1,49 @@
+{
+  "VertexTypes": [
+    {
+      "name": "L1",
+      "columns": {
+        "L1-P1": "Integer",
+        "L1-P2": "String",
+        "L1-P3": "integer",
+        "L1-P4": "integer"
+      },
+      "row": 10
+    },
+    {
+      "name": "L2",
+      "columns": {
+        "L2-P1": "Integer",
+        "L2-P2": "String"
+      },
+      "row": 10
+    },
+    {
+      "name": "L3",
+      "columns": {
+        "L3-P1": "Integer"
+      },
+      "row": 10
+    }
+  ],
+  "EdgeTypes": [
+    {
+      "name": "E1",
+      "columns": {
+        "E1-P1": "Integer"
+      },
+      "row": 20,
+      "Left": "L1",
+      "Right": "L2"
+    },
+    {
+      "name": "E2",
+      "columns": {
+        "E2-P1": "Integer"
+      },
+      "row": 10,
+      "Left": "L2",
+      "Right": "L3"
+    }
+  ]
+}
