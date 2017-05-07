@@ -1,4 +1,4 @@
-package com.ibm.janusgraph;
+package com.ibm.janusgraph.bench;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -1,4 +1,4 @@
-package com.ibm.janusgraph;
+package com.ibm.janusgraph.bench;
 
 public class VertexLabelBean{
     public String name = null;

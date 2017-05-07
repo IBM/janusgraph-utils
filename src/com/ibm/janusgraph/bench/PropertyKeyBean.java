@@ -1,4 +1,4 @@
-package com.ibm.janusgraph;
+package com.ibm.janusgraph.bench;
 
 public class PropertyKeyBean {
     public String name;
