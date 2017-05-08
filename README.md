@@ -23,7 +23,44 @@ gremlin> :load JanusgraphGSONSchema.groovy
 gremlin> writeGraphSONSchema(graph, 'schema.json')
 ```
 
-#### schema GSON
+#### How to load the groovy script in gremlin console
+Use the following command to load the utility groovy script into gremlin console:
+
+```
+gremlin> :load <JanusgraphGSONSchema.groovy>
+```
+
+Use the `:load` command and specify the groovy script location to load the groovy script.
+
+#### How to load the groovy scripto into gremlin server
+Modify the gremlin server configuration file `gremlin-server.yaml` under `janusgraph/conf/gremlin-server` directory. Add the groovy script into
+`scriptEngines.gremlin-groovy.scripts`. Its value is an array and contains
+all groovy scripts that would be loaded into gremlin-groovy script engine when
+gremlin server starts. Here is a sample configruation of `gremlin-server.yaml` (partial):
+
+```(YAML)
+scriptEngines: {
+  gremlin-groovy: {
+    imports: [java.lang.Math],
+    staticImports: [java.lang.Math.PI],
+    scripts: [scripts/empty-sample.groovy, scripts/JanusgraphGSONSchema.groovy]}}
+```
+#### APIs
+Once you load the JanusgraphGSONSchema.groovy into gremlin console, you can use the following APIs:
+- **JanusgraphGSONSchema.parse(file)**:
+  -  file: a string which points to the schema graphSON document  
+  
+  It parses and retunrs a schema bean object which contains the whole settings of the schema GSON
+
+- **writeGraphSONSchema(janusgraph, file)**:
+  - janusgraph: a Janusgraph instance
+  - file: a string which points to the schema graphSON document
+
+  It parses the schema GraphSON document and write the definitions of properties, vertices and edges into the janusgraph database.
+
+#### The graphSON document
+It contains the defintions of properties, vertices and edges:
+
 ```
 {
     "propertyKeys": [.....],
@@ -38,9 +75,9 @@ gremlin> writeGraphSONSchema(graph, 'schema.json')
 Each property contains an array of objects. See detailed information for each 
 kind of object below.
 
-#### schema for propertyKey
+**propertyKeys**
 
-The schema of the object inside the array of "propertyKeys":
+It's an array and contains the definition of the properties. Each property is defined in an object with the following format:
 ```
 {
     "name": "<propertyName>",
@@ -49,9 +86,11 @@ The schema of the object inside the array of "propertyKeys":
 }
 ```
 
-#### schema for VertexLabel
+**vertexLabels**
 
-The schema of the object inside the array of "vertexLabels":
+It's an array and contains the definition of the vertices. Each vertex is
+defined in an object with the following format:
+
 ```
 {
     "name": "<vertex label>",
@@ -60,9 +99,11 @@ The schema of the object inside the array of "vertexLabels":
 }
 ```
 
-#### schema for EdgeLabel
+**edgeLabels**
 
-The schema of the object inside the array of "edgeLabels":
+It's an array and contains the definition of the edges. Each edge is defined
+in an object with the following format:
+
 ```
 {
     "name": "<edge label>",
@@ -72,9 +113,11 @@ The schema of the object inside the array of "edgeLabels":
 }
 ```
 
-#### schema for vertexIndexes
+**vertexIndexes**
 
-The schema of the object inside of the array of "vertexIndexes":
+It's an array and contains the definition of vertex indices. Each vertex index
+is defined in an object with the following format:
+
 ```
 {
     "name": "<index name>",
@@ -85,9 +128,11 @@ The schema of the object inside of the array of "vertexIndexes":
 }
 ```
 
-#### schema for edgeIndexes
+**edgeIndexes**
 
-The schema of the object inside of the array of "edgeIndexes":
+It's an array and contains the definition of edge indices. Each edge index
+is defined in an object with the following format:
+
 ```
 {
     "name": "<index name>",
@@ -97,9 +142,11 @@ The schema of the object inside of the array of "edgeIndexes":
 }
 ```
 
-#### schema for vertexCentricIndexes
+**vertexCentricIndexes**
 
-The schema of the object inside of the array of "vertexCentricIndexes":
+It's an array and contains the definition of vertex-centric indices. Each
+vertex-centric index is defined in an object with the following format:
+
 ```
 {
     "name": "<index name>",
