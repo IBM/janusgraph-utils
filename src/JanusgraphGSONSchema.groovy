@@ -377,7 +377,7 @@ class JanusgraphGSONSchema {
      * @param gsonSchemaFile
      * @return
      */
-    public GSONSchema parse(String gsonSchemaFile) {
+    public static GSONSchema parse(String gsonSchemaFile) {
         File gsonFile = new File(gsonSchemaFile)
 
         if (!gsonFile.exists()) {
