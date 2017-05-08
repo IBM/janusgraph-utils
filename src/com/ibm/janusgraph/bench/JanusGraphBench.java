@@ -1,6 +1,7 @@
 package com.ibm.janusgraph.bench;
 import java.io.File;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.janusgraph.bench.beans.GSONSchema;
 
 public class JanusGraphBench {
 

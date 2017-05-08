@@ -11,6 +11,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.janusgraph.bench.beans.CSVConfig;
+import com.ibm.janusgraph.bench.beans.CSVIdBean;
+import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
+import com.ibm.janusgraph.bench.beans.VertexTypeBean;
 
 public class CSVGenerator {
     private CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");

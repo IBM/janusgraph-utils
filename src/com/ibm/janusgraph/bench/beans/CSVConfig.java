@@ -1,4 +1,4 @@
-package com.ibm.janusgraph.bench;
+package com.ibm.janusgraph.bench.beans;
 
 import java.util.List;
 
