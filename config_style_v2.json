@@ -1,0 +1,31 @@
+{
+  "VertexTypes": [
+    {
+      "name": "L1",
+      "columns": {
+        "L1-P1": {"dataType":"Integer","composit":true},
+        "L1-P2": {"dataType":"Integer","composit":true}
+      },
+      "row": 10
+    },
+    {
+      "name": "L2",
+      "columns": {
+        "L2-P1": {"dataType":"Integer","composit":true},
+        "L2-P2": {"dataType":"String","composit":true}
+      },
+      "row": 10
+    }
+  ],
+  "EdgeTypes": [
+    {
+      "name": "E1",
+      "columns": {
+        "E1-P1": {"dataType":"String","composit":true}
+      },
+      "row": 5,
+      "Left": "L1",
+      "Right": "L2"
+    }
+  ]
+}

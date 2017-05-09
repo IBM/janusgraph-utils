@@ -3,7 +3,10 @@ package com.ibm.janusgraph.bench;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import javax.management.RuntimeErrorException;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -13,7 +16,9 @@ import org.apache.commons.lang3.RandomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.janusgraph.bench.beans.CSVConfig;
 import com.ibm.janusgraph.bench.beans.CSVIdBean;
+import com.ibm.janusgraph.bench.beans.ColumnBean;
 import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
+import com.ibm.janusgraph.bench.beans.RelationBean;
 import com.ibm.janusgraph.bench.beans.VertexTypeBean;
 
 public class CSVGenerator {
@@ -28,11 +33,11 @@ public class CSVGenerator {
         
     }
     
-    private ArrayList<Object> generateOneRecord(Map<String, String> columns){
+    private ArrayList<Object> generateOneRecord(Map<String,ColumnBean> columns){
         ArrayList<Object> rec = new ArrayList<Object>();
         
         columns.forEach( (name, value) -> {
-            if (value.toLowerCase().equals("integer")){
+            if (value.dataType.toLowerCase().equals("integer")){
                 //rec.add(randomInteger(RANGE[0],RANGE[1],randomInt));
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
             }
@@ -43,23 +48,28 @@ public class CSVGenerator {
         return rec;
     }
     
-    public void writeEdgeCSV(EdgeTypeBean type, String outputDirectory ){
-        String csvFile = outputDirectory + "/" + type.name + "_edges.csv";
+    public void writeEdgeCSVs(EdgeTypeBean type, String outputDirectory ){
         ArrayList<String> header = new ArrayList<String>();
         header.add("Left");
         header.add("Right");
         header.addAll(type.columns.keySet());
         try {
-            CSVPrinter csvFilePrinter = new CSVPrinter(new FileWriter(csvFile), csvFileFormat);
-            csvFilePrinter.printRecord(header);
-            for(int i = 0; i < type.row; i++){
-                ArrayList<Object> record = new ArrayList<Object>();
-                record.add(idFactory.getRandomIdForVertexType(type.Left));
-                record.add(idFactory.getRandomIdForVertexType(type.Right));
-                record.addAll(generateOneRecord(type.columns));
-                csvFilePrinter.printRecord(record);
+            for (RelationBean relation: type.relations) {
+                /*Ex: /tmp/left-right_E1_edges.csv    */
+                String csvFile = outputDirectory + "/" + relation.left +"-" + relation.right
+                        + "_" + type.name + "_edges.csv";
+                CSVPrinter csvFilePrinter = new CSVPrinter(new FileWriter(csvFile), csvFileFormat);
+                csvFilePrinter.printRecord(header);
+
+                for (int i = 0; i < relation.row; i++) {
+                    ArrayList<Object> record = new ArrayList<Object>();
+                    record.add(idFactory.getRandomIdForVertexType(relation.left));
+                    record.add(idFactory.getRandomIdForVertexType(relation.right));
+                    record.addAll(generateOneRecord(type.columns));
+                    csvFilePrinter.printRecord(record);
+                }
+                csvFilePrinter.close();
             }
-            csvFilePrinter.close();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e.toString());
@@ -88,13 +98,13 @@ public class CSVGenerator {
         }
     }
     public void writeAllCSVs(String outputDirectory){
-        for (VertexTypeBean csv : csvConf.VertexTypes){
-            Runnable task = () -> { writeVertexCSV(csv, "/tmp");};
+        for (VertexTypeBean vertex : csvConf.VertexTypes){
+            Runnable task = () -> { writeVertexCSV(vertex, "/tmp");};
             new Thread(task).start();
         }
         
-        for (EdgeTypeBean csv: csvConf.EdgeTypes){
-            Runnable task = () -> { writeEdgeCSV(csv, "/tmp");};
+        for (EdgeTypeBean edge: csvConf.EdgeTypes){
+            Runnable task = () -> { writeEdgeCSVs(edge, "/tmp");};
             new Thread(task).start();
             
         }
@@ -103,14 +113,29 @@ public class CSVGenerator {
     static CSVConfig loadConfig(String jsonConfFile){
         ObjectMapper confMapper = new ObjectMapper();
         try {
-            return confMapper.readValue(new File(jsonConfFile), CSVConfig.class);
+            
+            CSVConfig conf = confMapper.readValue(new File(jsonConfFile), CSVConfig.class);
+            isValidConfig(conf);
+            return conf;
         } catch (Exception e) {
             throw new RuntimeException("Fail to parse, read, or evaluate the config JSON. " + e.toString());
         }
     }
     
-    public void validateCSVConf(CSVConfig conf){
-        // TODO validate the csvconfig here:
-        // 1. Left and Right needs to be one of the VertexTypes
+    public static void isValidConfig(CSVConfig config){
+        List<String> typeArray = new ArrayList<String>();
+        config.VertexTypes.forEach(vertextype -> typeArray.add(vertextype.name));
+        for (EdgeTypeBean edgeType: config.EdgeTypes){
+            for (RelationBean relation: edgeType.relations) {
+                    if(!typeArray.contains(relation.left)){
+                        throw new RuntimeException("relationships: "
+                                + relation.left + " is not of vertex types: " + typeArray.toString());}
+                    if(!typeArray.contains(relation.right))
+                        throw new RuntimeException("relationships: "
+                                + relation.right + " is not of vertex types: " + typeArray.toString());        
+            }
+        }
+        //return true;
     }
+
 }

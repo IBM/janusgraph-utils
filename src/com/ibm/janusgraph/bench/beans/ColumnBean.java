@@ -1,7 +1,6 @@
 package com.ibm.janusgraph.bench.beans;
 
-import java.util.Map;
-
 public class ColumnBean {
-    Map<String, String> columns;
+    public String dataType;
+    public boolean composit=true;
 }

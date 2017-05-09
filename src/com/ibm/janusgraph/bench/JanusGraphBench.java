@@ -11,25 +11,16 @@ public class JanusGraphBench {
     
     static void prepareCSV(String csvConfPath){
         CSVGenerator csv = new CSVGenerator(csvConfPath);
-        csv.writeAllCSVs("/tmp");
-        
+        csv.writeAllCSVs("/tmp");  
     }
 
     
-    static GSONSchema loadSchema(String gsonSchemaFile){
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(new File(gsonSchemaFile), GSONSchema.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Fail to parse, read, or evaluate the GSON schema. " + e.toString());
-        }
-    }
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         
         //GSONSchema json = loadSchema("/home/ubuntu/workspaces/JanusGraphBench/schema.json");
-        prepareCSV("/home/ubuntu/workspaces/JanusGraphBench/config.json");
+        prepareCSV("/home/ubuntu/workspaces/JanusGraphBench/config_style_v3.json");
         System.out.println("Finished");
     }
 }

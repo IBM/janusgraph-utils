@@ -1,12 +1,11 @@
 package com.ibm.janusgraph.bench.beans;
 
+import java.util.List;
 import java.util.Map;
 
 public class EdgeTypeBean {
     public String name = null;
-    public Map<String, String> columns = null;
-    public int row = 0;
-    public String Left = null;
-    public String Right = null;
+    public Map<String, ColumnBean> columns = null;
+    public List<RelationBean> relations = null;
     //public List<String> between = null;
 }
