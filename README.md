@@ -1,5 +1,10 @@
 # JanusGraphBench
 The Benchmark tool for JanusGraph performance
+# How to Use:
+Import as an Eclipse project. Under the project folder, there are a few pre-defined config file for benchmarker csv generator. 
+###Example 1 Generate and load a tiny JanusgraphDB
+	- JanusGraphBench /home/ubuntu/workspaces/JanusGraphBench/tiny_config.json /tmp
+	- BatchImport <Path-to-your-janusgraph-config>/janusgraph-cassandra-es.properties /tmp/ /tmp/schema.json /tmp/datamapper.json
 # Proposal 
 ###Populate entire graphdb with a configuration json. 
 #####We should provide a default configuration that specify these elements (* is for now):  
