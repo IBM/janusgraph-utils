@@ -7,4 +7,8 @@ public class EdgeLabelBean{
     public String multiplicity = "MULTI";
     public List<String> signatures;
     public boolean unidirected = false;
+    
+    public EdgeLabelBean(String name){
+        this.name = name;
+    }
 }

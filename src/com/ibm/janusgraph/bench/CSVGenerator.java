@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,7 +23,7 @@ public class CSVGenerator {
     private CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
     private CSVConfig csvConf = null;
     private CSVIdBean idFactory = null;
-    private int[] RANDDOM_INT_RANGE = {100000,999999};
+    private int[] RANDDOM_INT_RANGE = {100000,99999999};
 
     public CSVGenerator(String csvConfPath){
         this.csvConf = loadConfig(csvConfPath);
@@ -37,7 +35,8 @@ public class CSVGenerator {
         ArrayList<Object> rec = new ArrayList<Object>();
         
         columns.forEach( (name, value) -> {
-            if (value.dataType.toLowerCase().equals("integer")){
+            if (value.dataType.toLowerCase().equals("integer") 
+                    || value.dataType.toLowerCase().equals("long")){
                 //rec.add(randomInteger(RANGE[0],RANGE[1],randomInt));
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
             }
@@ -69,6 +68,7 @@ public class CSVGenerator {
                     csvFilePrinter.printRecord(record);
                 }
                 csvFilePrinter.close();
+                System.out.println("Generated edge file: "+ csvFile);
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -93,6 +93,7 @@ public class CSVGenerator {
                 csvFilePrinter.printRecord(record);
             }
             csvFilePrinter.close();
+            System.out.println("Generated vertex file: "+ csvFile);
         } catch (Exception e) {
             throw new RuntimeException(e.toString());
         }

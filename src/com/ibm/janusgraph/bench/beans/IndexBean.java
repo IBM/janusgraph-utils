@@ -7,6 +7,14 @@ public class IndexBean{
     public List<String> propertyKeys;
     public boolean composite = true;
     public boolean unique = false;
-    public String indexOnly = null;
-    public String mixedIndex = null;
+    //public String indexOnly = null;
+    //public String mixedIndex = null;
+    public IndexBean(String name, List<String> propertyKeys, boolean composite, boolean unique) {
+        this.name = name;
+        this.propertyKeys = propertyKeys;
+        this.composite = composite;
+        this.unique = unique;
+    }
+    
+    
 }
