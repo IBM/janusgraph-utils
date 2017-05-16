@@ -13,7 +13,11 @@ Benchmark tool for generating customized JanusGraph performance workload.
 	VertexType.row: change number of vertex of the named label
 	EdgeTypes: contains any number of different vertex labels
 	EdgeTypes[0].name: change the first edgelabel name
-	EdgeTypes[0].columns: may contain any number of columns(edge property keys). Column names, dataType, and composit are all customizable.
+	EdgeTypes[0].columns: may contain any number of columns(edge property keys). 
+		- columns names: any string 
+		- dataType: String, Long, Integer, and Date. 
+		- composit: true or false
+		- mixedIndex: any String (default should be "search") 
 	EdgeTypes[0].relations: Defines how the named edge relations can happen and number of occurrences. 
 ```
 {
