@@ -2,7 +2,9 @@ package com.ibm.janusgraph.bench;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +25,11 @@ public class CSVGenerator {
     private CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
     private CSVConfig csvConf = null;
     private CSVIdBean idFactory = null;
+    private Calendar cal = Calendar.getInstance();
+    private long CURRENT_TIME = cal.getTimeInMillis();
     private int[] RANDDOM_INT_RANGE = {100000,99999999};
+    private long[] RANDOM_TIME_RANGE = {(long)0, CURRENT_TIME};
+    private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 
     public CSVGenerator(String csvConfPath){
         this.csvConf = loadConfig(csvConfPath);
@@ -39,6 +45,9 @@ public class CSVGenerator {
                     || value.dataType.toLowerCase().equals("long")){
                 //rec.add(randomInteger(RANGE[0],RANGE[1],randomInt));
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
+            }else if (value.dataType.toLowerCase().equals("date")){
+                cal.setTimeInMillis(RandomUtils.nextLong(RANDOM_TIME_RANGE[0], RANDOM_TIME_RANGE[1]));
+                rec.add(TIME_FORMAT.format(cal.getTime()).toString());
             }
             else{
                 rec.add(RandomStringUtils.randomAlphabetic(10));
