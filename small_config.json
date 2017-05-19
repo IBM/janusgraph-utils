@@ -5,7 +5,7 @@
       "columns": {
         "T1-P1": {"dataType":"String","composit":true}
       },
-      "row": 1000000
+      "row": 100000
     },
     {
       "name": "T2",
@@ -13,7 +13,7 @@
         "T2-P1": {"dataType":"String","composit":true},
         "T2-P2": {"dataType":"Integer","composit":true}
       },
-      "row": 1000000
+      "row": 100000
     },
     {
       "name": "T3",
@@ -21,7 +21,7 @@
         "T3-P1": {"dataType":"String","composit":true},
         "T3-P2": {"dataType":"String","composit":true}
       },
-      "row": 1000000
+      "row": 100000
     }
 
   ],
@@ -32,7 +32,7 @@
         "E1-P1": {"dataType":"Integer","composit":true}
       },
       "relations": [
-        {"left": "T1", "right": "T2", "row": 1000000 }
+        {"left": "T1", "right": "T2", "row": 100000 }
       ]
     },
     {
@@ -41,7 +41,7 @@
         "E2-P1": {"dataType":"Date","composit":true}
       },
       "relations": [
-        {"left": "T2", "right": "T3", "row":2000000 }
+        {"left": "T2", "right": "T3", "row":200000 }
       ]
     }
   ]

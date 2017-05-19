@@ -38,10 +38,10 @@
     {
       "name": "E2",
       "columns": {
-        "E2-P1": {"dataType":"Long","composit":true}
+        "E2-P1": {"dataType":"Date","composit":true}
       },
       "relations": [
-        {"left": "T2", "right": "T3", "row":10000000 }
+        {"left": "T2", "right": "T3", "row":20000000 }
       ]
     }
   ]

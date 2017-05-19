@@ -6,10 +6,10 @@ public class JanusGraphBench {
 
     }
     
-    static void prepareCSV(String csvConfPath){
+    static void prepareCSV(String csvConfPath, String outputDirectory){
         CSVGenerator csv = new CSVGenerator(csvConfPath);
         System.out.println("Loaded csv config file: "+ csvConfPath);
-        csv.writeAllCSVs("/tmp");  
+        csv.writeAllCSVs(outputDirectory);  
     }
 
     public static void main(String[] args) {
@@ -19,7 +19,7 @@ public class JanusGraphBench {
             System.exit(1);
         }
        String csvConfPath = args[0];
-       prepareCSV(csvConfPath);
+       prepareCSV(csvConfPath, args[1]);
        GSONUtil.writeToFile(args[1] + "/schema.json",GSONUtil.configToSchema(csvConfPath));
        GSONUtil.writeToFile(args[1] + "/datamapper.json", GSONUtil.toDataMap(csvConfPath));
        

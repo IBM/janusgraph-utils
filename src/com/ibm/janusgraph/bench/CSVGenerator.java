@@ -109,12 +109,12 @@ public class CSVGenerator {
     }
     public void writeAllCSVs(String outputDirectory){
         for (VertexTypeBean vertex : csvConf.VertexTypes){
-            Runnable task = () -> { writeVertexCSV(vertex, "/tmp");};
+            Runnable task = () -> { writeVertexCSV(vertex, outputDirectory);};
             new Thread(task).start();
         }
         
         for (EdgeTypeBean edge: csvConf.EdgeTypes){
-            Runnable task = () -> { writeEdgeCSVs(edge, "/tmp");};
+            Runnable task = () -> { writeEdgeCSVs(edge, outputDirectory);};
             new Thread(task).start();
             
         }
