@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.janusgraph.bench.beans.CSVConfig;
 import com.ibm.janusgraph.bench.beans.CSVIdBean;
@@ -76,6 +78,24 @@ public class CSVGenerator {
                     record.addAll(generateOneRecord(type.columns));
                     csvFilePrinter.printRecord(record);
                 }
+                //add supernodes
+                if (relation.supernode != null){
+                    int numSuperV = relation.supernode.get("vertices"); 
+                    int numE = relation.supernode.get("edges");
+                    int minId = idFactory.getMinId(relation.left);
+                    if (  numSuperV > 0 && numE > 0){
+                        
+                        for ( int v = minId; v < minId + numSuperV; v ++){
+                            for (int e = 0; e < numE; e++){
+                                ArrayList<Object> record = new ArrayList<Object>();
+                                record.add(v);
+                                record.add(idFactory.getRandomIdForVertexType(relation.right));
+                                record.addAll(generateOneRecord(type.columns));
+                                csvFilePrinter.printRecord(record);
+                            }
+                        }
+                    }
+                }
                 csvFilePrinter.close();
                 System.out.println("Generated edge file: "+ csvFile);
             }
@@ -137,15 +157,36 @@ public class CSVGenerator {
         config.VertexTypes.forEach(vertextype -> typeArray.add(vertextype.name));
         for (EdgeTypeBean edgeType: config.EdgeTypes){
             for (RelationBean relation: edgeType.relations) {
-                    if(!typeArray.contains(relation.left)){
-                        throw new RuntimeException("relationships: "
-                                + relation.left + " is not of vertex types: " + typeArray.toString());}
-                    if(!typeArray.contains(relation.right))
-                        throw new RuntimeException("relationships: "
-                                + relation.right + " is not of vertex types: " + typeArray.toString());        
+            //validate left and right are in the vertex types
+                if(!typeArray.contains(relation.left)){
+                    throw new RuntimeException("relationships: "
+                            + relation.left + " is not of vertex types: " + typeArray.toString());}
+                if(!typeArray.contains(relation.right))
+                    throw new RuntimeException("relationships: "
+                            + relation.right + " is not of vertex types: " + typeArray.toString());        
+                //validate supernode vertice number is less than the total
+                Iterator<VertexTypeBean> vTypes = config.VertexTypes.iterator();
+                while (vTypes.hasNext()){
+                    VertexTypeBean type = vTypes.next();
+                    if (relation.left.equals(type.name) &&
+                        relation.supernode != null &&
+                        relation.supernode.get("vertices") > type.row){
+                        ObjectMapper mapper = new ObjectMapper();
+                        try {
+                            mapper.writeValueAsString(relation);
+                            throw new RuntimeException(
+                                mapper.writeValueAsString(relation) +
+                                "supernode.vertices is greater than " +
+                                type.name + "'s row"
+                            );
+                        } catch (JsonProcessingException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
-        //return true;
     }
 
 }

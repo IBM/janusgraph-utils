@@ -76,10 +76,10 @@ public class GSONUtil {
     public static GSONSchema configToSchema(String csvConfPath){
         GSONSchema gson = new GSONSchema();
         CSVConfig csvConf = CSVGenerator.loadConfig(csvConfPath);
-        //manually add node_id as a unique propertyKey and  index
+        //manually add node_id as a unique propertyKey and index
         PropertyKeyBean nodeIdKey = new PropertyKeyBean("node_id", "Integer");
         gson.propertyKeys.add(nodeIdKey);
-        IndexBean nodeIdIndex = new IndexBean("node_id", Arrays.asList("node_id"), true, true);
+        IndexBean nodeIdIndex = new IndexBean("node_id", Arrays.asList("node_id"), true, true, null, null);
         gson.vertexIndexes.add(nodeIdIndex);
         
         for (VertexTypeBean type : csvConf.VertexTypes){
@@ -92,6 +92,9 @@ public class GSONUtil {
                 String propertyKeyName = col.getKey();
                 String propertyKeyType = col.getValue().dataType;
                 boolean keyIndexType = col.getValue().composit;
+                String indexOnly = col.getValue().indexOnly;
+                String mixedIndex = col.getValue().mixedIndex;
+                
                 //TODO test duplicated keys
                 if (!gson.vertexIndexes.contains(col.getKey()))
                         gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName,propertyKeyType));
@@ -100,7 +103,7 @@ public class GSONUtil {
                 IndexBean index = new IndexBean(propertyKeyName,
                                                 Arrays.asList(propertyKeyName),
                                                 keyIndexType, 
-                                                false);
+                                                false,indexOnly,mixedIndex);
               //TODO test duplicated keys
                 if (!gson.vertexIndexes.contains(index.name))
                     gson.vertexIndexes.add(index);
@@ -118,13 +121,15 @@ public class GSONUtil {
                 String propertyKeyName = col.getKey();
                 String propertyKeyType = col.getValue().dataType;
                 boolean keyIndexType = col.getValue().composit;
+                String indexOnly = col.getValue().indexOnly;
+                String mixedIndex = col.getValue().mixedIndex;
                 gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName,propertyKeyType));
                 
                 //add edgeIndexes
                 IndexBean index = new IndexBean(propertyKeyName,
                                                 Arrays.asList(propertyKeyName),
                                                 keyIndexType, 
-                                                false);
+                                                false, indexOnly, mixedIndex);
                 gson.edgeIndexes.add(index);
             }
         }
