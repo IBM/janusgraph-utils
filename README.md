@@ -6,28 +6,28 @@ Janusgraph, including:
 - JanusgraphGSONSchema: import GraphSON schema document into JanusGraph
 
 
-### JanusgraphGSONSchema
+### JanusGraphModelImporter
 
-This utility read GraphSON scheme document and write to JanusGraph.
-Please see the sample GraphSON scheme document under `samples` directory.
+This utility read GraphSON model document and write to JanusGraph.
+Please see the sample GraphSON model document under `samples` directory.
 
 Usage:
 ```
 gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
 ==>standardjanusgraph[embeddedcassandra:[127.0.0.1]]
-gremlin> :load JanusgraphGSONSchema.groovy
+gremlin> :load JanusGraphModelImporter.groovy
 ......
 ......
 ==>true
 ==>true
-gremlin> writeGraphSONSchema(graph, 'schema.json')
+gremlin> writeGraphSONModel(graph, 'schema.json')
 ```
 
 #### How to load the groovy script in gremlin console
 Use the following command to load the utility groovy script into gremlin console:
 
 ```
-gremlin> :load <JanusgraphGSONSchema.groovy>
+gremlin> :load <JanusGraphModelImporter.groovy>
 ```
 
 Use the `:load` command and specify the groovy script location to load the groovy script.
@@ -43,20 +43,32 @@ scriptEngines: {
   gremlin-groovy: {
     imports: [java.lang.Math],
     staticImports: [java.lang.Math.PI],
-    scripts: [scripts/empty-sample.groovy, scripts/JanusgraphGSONSchema.groovy]}}
+    scripts: [scripts/empty-sample.groovy, scripts/JanusGraphModelImporter.groovy]}}
 ```
 #### APIs
 Once you load the JanusgraphGSONSchema.groovy into gremlin console, you can use the following APIs:
-- **JanusgraphGSONSchema.parse(file)**:
+- **JanusGraphSONModel.parse(file)**:
   -  file: a string which points to the schema graphSON document  
   
   It parses and retunrs a schema bean object which contains the whole settings of the schema GSON
 
-- **writeGraphSONSchema(janusgraph, file)**:
-  - janusgraph: a Janusgraph instance
+- **writeGraphSONModel(janusgraph, file)**:
+  - janusgraph: a JanusGraph instance
   - file: a string which points to the schema graphSON document
-
+  
   It parses the schema GraphSON document and write the definitions of properties, vertices and edges into the janusgraph database.
+  
+- **updateCompositeIndexState(janusgraph, indexName, newState)**:
+  - janusgraph: a JanusGraph instance
+  - indexName: the composite index name
+  - newState: the new index state, could be:
+    - SchemaAction.DISABLE_INDEX
+    - SchemaAction.ENABLE_INDEX
+    - SchemaAction.REGISTER_INDEX
+    - SchemaAction.REINDEX
+    - SchemaAction.REMOVE_INDEX
+
+   It changes the index from its original state into new state if the state transition is valid.
 
 #### The graphSON document
 It contains the defintions of properties, vertices and edges:

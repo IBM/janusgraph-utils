@@ -8,14 +8,18 @@ import org.apache.tinkerpop.shaded.jackson.databind.node.TextNode
 import org.janusgraph.core.Cardinality
 import org.janusgraph.core.EdgeLabel
 import org.janusgraph.core.JanusGraph
+import org.janusgraph.core.JanusGraphTransaction
 import org.janusgraph.core.Multiplicity
 import org.janusgraph.core.PropertyKey
 import org.janusgraph.core.attribute.Geoshape
 import org.janusgraph.core.schema.EdgeLabelMaker
+import org.janusgraph.core.schema.JanusGraphIndex
 import org.janusgraph.core.schema.JanusGraphManagement
 import org.janusgraph.core.schema.JanusGraphSchemaType
+import org.janusgraph.core.schema.SchemaAction
 import org.janusgraph.core.schema.VertexLabelMaker
 import org.janusgraph.core.schema.JanusGraphManagement.IndexBuilder
+import org.janusgraph.graphdb.database.StandardJanusGraph
 
 /**
  * Janusgraph datatype mapping table
@@ -289,7 +293,7 @@ class VertexCentricIndexBean {
  * - edgeIndexes
  * - vertexCentricIndexes
  */
-class GSONSchema {
+class GraphModel {
     List<PropertyKeyBean> propertyKeys;
     List<VertexLabelBean> vertexLabels;
     List<EdgeLabelBean> edgeLabels;
@@ -338,16 +342,16 @@ class GSONSchema {
 }
 
 /**
- * A utility class to read GraphSON schema document and write to JanusGraph
+ * A utility class to read GraphSON model document and write to JanusGraph
  */
-class JanusgraphGSONSchema {
-    JanusGraph graph
+class JanusGraphSONModel {
+    StandardJanusGraph graph
 
     /**
-     * Constructor of JansugraphGSONSchema object with the {@code graph}
+     * Constructor of JanusGraphSONModel object with the {@code graph}
      * @param graph a JanusGraph and write GraphSON schema into it
      */
-    public JanusgraphGSONSchema(JanusGraph graph) {
+    public JanusGraphSONModel(JanusGraph graph) {
         if (!graph) {
             throw new Exception("JanusGraph is null")
         }
@@ -355,37 +359,80 @@ class JanusgraphGSONSchema {
     }
 
     /**
-     * Read the GraphSON schema document from {@code gsonSchemaFile}
+     * Read the GraphSON schema document from {@code modelFile}
      * and write to the JanusGraph
-     * @param gsonSchemaFile GraphSON schema document and using
-     *        IBM Graph GraphSON schema format.
+     * @param modelFile GraphSON model document and using
+     *        IBM Graph GraphSON format.
      */
-    public void readFile(String gsonSchemaFile) {
+    public void readFile(String modelFile) {
         JanusGraphManagement mgmt = graph.openManagement()
 
         try {
-            parse(gsonSchemaFile)
+            parse(modelFile)
                 .make(mgmt)
+            rollbackTxs(graph)
         } catch (Exception e) {
             print "parse GSON failed: ${e.getMessage()}"
         }
     }
 
     /**
-     * Parse the GraphSON document and return a GSONSchema object
+     * Commit all running transactions upon the graph
+     * @param graph
+     * @return
+     */
+    public static boolean commitTxs(JanusGraph graph) {
+        StandardJanusGraph sgraph = graph
+        try {
+            Set<JanusGraphTransaction>txs = sgraph.getOpenTransactions()
+            //commit all running transactions
+            Iterator<JanusGraphTransaction> iter = txs.iterator()
+            while (iter.hasNext()) {
+                iter.next().commit()
+            }
+        } catch (Exception e) {
+            //ignore
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Rollback back all running transaction upon the graph
+     * @param graph
+     * @return
+     */
+    public static boolean rollbackTxs(JanusGraph graph) {
+        StandardJanusGraph sgraph = graph
+        try {
+            Set<JanusGraphTransaction>txs = sgraph.getOpenTransactions()
+            //commit all running transactions
+            Iterator<JanusGraphTransaction> iter = txs.iterator()
+            while (iter.hasNext()) {
+                iter.next().rollback()
+            }
+        } catch (Exception e) {
+            //ignore
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Parse the GraphSON document and return a GraphModel object
      * if parse successes
      * @param gsonSchemaFile
      * @return
      */
-    public static GSONSchema parse(String gsonSchemaFile) {
-        File gsonFile = new File(gsonSchemaFile)
+    public static GraphModel parse(String modelFile) {
+        File gsonFile = new File(modelFile)
 
         if (!gsonFile.exists()) {
-            throw new Exception("file not found:" + gsonSchemaFile)
+            throw new Exception("file not found:" + modelFile)
         }
 
         ObjectMapper mapper = new ObjectMapper()
-        return mapper.readValue(gsonFile, GSONSchema.class)
+        return mapper.readValue(gsonFile, GraphModel.class)
     }
 
     void make(List<ObjectNode> nodes, String name, Closure check, Closure exist, Closure create) {
@@ -401,13 +448,25 @@ class JanusgraphGSONSchema {
 }
 
 /**
- * parse the GraphSON schema in {@code schema} and write to
+ * parse the GraphSON model in {@code schema} and write to
  * {@code graph}
  * @param graph a valid JanusGraph instance
- * @param schema GraphSON schema document location
+ * @param schema GraphSON model document location
  * @return
  */
-def writeGraphSONSchema(graph, schema) {
-    JanusgraphGSONSchema importer = new JanusgraphGSONSchema(graph)
+def writeGraphSONModel(graph, schema) {
+    JanusGraphSONModel importer = new JanusGraphSONModel(graph)
     importer.readFile(schema)
+}
+
+def updateCompositeIndexState(JanusGraph graph, String name, SchemaAction newState) {
+    JanusGraphManagement mgmt = graph.openManagement()
+    JanusGraphIndex index = mgmt.getGraphIndex(name)
+    if (index == null) {
+        print "${name} index doesn't exist"
+        return
+    }
+    mgmt.updateIndex(index, newState)
+    mgmt.commit()
+    JanusGraphSONModel.rollbackTxs(graph)
 }
