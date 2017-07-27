@@ -454,7 +454,7 @@ class JanusGraphSONModel {
  * @param schema GraphSON model document location
  * @return
  */
-def writeGraphSONModel(graph, schema) {
+def writeGraphSONModel(JanusGraph graph, String schema) {
     JanusGraphSONModel importer = new JanusGraphSONModel(graph)
     importer.readFile(schema)
 }
