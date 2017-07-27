@@ -28,14 +28,26 @@ public class DataModelLoader {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		JanusGraph g = JanusGraphFactory.open("samples/janusgraph-cql-es.properties");
+		String schemaFile = "samples/schema.json";
+		String configFile = "samples/janusgraph-cql-es.properties";
+		
+		if (null != args)
+			if (args.length >= 1) 
+				schemaFile = args[0];
+			if (args.length >= 2) 
+				configFile = args[1];
+		
+		// use custom or default config file to get JanusGraph
+		JanusGraph g = JanusGraphFactory.open(configFile);
 		
 		try {
-			loadSchema(g, "samples/schema.json");
+			loadSchema(g, schemaFile);
 		}
 		catch (Exception e) {
 			System.out.println("Failed to import data model due to " + e.getMessage());
+		}
+		finally {
+			g.close();
 		}
 		 
 	}
