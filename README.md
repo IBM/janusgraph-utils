@@ -4,7 +4,7 @@ Benchmark tool for generating customized JanusGraph performance workload.
 #### Step 1 Download, Build, and Run from source with Maven
     git clone git@github.ibm.com:htchang/JanusGraphBench.git
     cd JanusGraphBench;mvn package
-    java -jar target/JanusGraphBench-0.0.1-SNAPSHOT.jar tiny_config.json /tmp
+    java -jar target/JanusGraphBench-0.0.1-SNAPSHOT.jar config/tiny_config.json /tmp
 #### Step 2 Populate the database with the [JanusGraphBatchImport] (https://github.com/sdmonov/JanusGraphBatchImporter)
 #### How to Customize database size
 	VertexTypes: contains any number of different vertex labels
