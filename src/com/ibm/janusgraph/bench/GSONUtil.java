@@ -65,8 +65,10 @@ public class GSONUtil {
                 vertex.maps.put("[edge_left]", subMap);
                 subMap2.put("Right", relation.right + ".node_id");
                 vertex.maps.put("[edge_right]", subMap2);
-                for (String key: type.columns.keySet()){
-                    vertex.maps.put(key, key);
+                if (type.columns != null) {
+                    for (String key : type.columns.keySet()) {
+                        vertex.maps.put(key, key);
+                    } 
                 }
             bmDataMap.edgeMap.put(edgeFileName,vertex.maps);
             }   
@@ -116,21 +118,21 @@ public class GSONUtil {
             EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name);
             gson.edgeLabels.add(edgeLabel);
             
-            //propertKeys
-            for (Entry<String,ColumnBean> col : type.columns.entrySet()){
-                String propertyKeyName = col.getKey();
-                String propertyKeyType = col.getValue().dataType;
-                boolean keyIndexType = col.getValue().composit;
-                String indexOnly = col.getValue().indexOnly;
-                String mixedIndex = col.getValue().mixedIndex;
-                gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName,propertyKeyType));
-                
-                //add edgeIndexes
-                IndexBean index = new IndexBean(propertyKeyName,
-                                                Arrays.asList(propertyKeyName),
-                                                keyIndexType, 
-                                                false, indexOnly, mixedIndex);
-                gson.edgeIndexes.add(index);
+            if (type.columns != null) {
+                //propertKeys
+                for (Entry<String, ColumnBean> col : type.columns.entrySet()) {
+                    String propertyKeyName = col.getKey();
+                    String propertyKeyType = col.getValue().dataType;
+                    boolean keyIndexType = col.getValue().composit;
+                    String indexOnly = col.getValue().indexOnly;
+                    String mixedIndex = col.getValue().mixedIndex;
+                    gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName, propertyKeyType));
+
+                    //add edgeIndexes
+                    IndexBean index = new IndexBean(propertyKeyName, Arrays.asList(propertyKeyName), keyIndexType,
+                            false, indexOnly, mixedIndex);
+                    gson.edgeIndexes.add(index);
+                } 
             }
         }
         return gson;
