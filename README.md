@@ -1,4 +1,4 @@
-# Gremlin groovy utility script [![Build Status](https://travis-ci.org/yhwang/janusgraph-utils.svg?branch=master)](https://travis-ci.org/yhwang/janusgraph-utils)
+# Gremlin groovy utility script [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
 
 Provide several utility scripts that could be used in gremlin console of
 Janusgraph, including:
