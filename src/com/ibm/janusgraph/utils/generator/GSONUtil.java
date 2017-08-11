@@ -1,4 +1,4 @@
-package com.ibm.janusgraph.bench;
+package com.ibm.janusgraph.utils.generator;
 
 import java.io.File;
 import java.util.Arrays;
@@ -7,19 +7,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.janusgraph.bench.beans.BatchImporterDataMap;
-import com.ibm.janusgraph.bench.beans.CSVConfig;
-import com.ibm.janusgraph.bench.beans.ColumnBean;
-import com.ibm.janusgraph.bench.beans.EdgeLabelBean;
-import com.ibm.janusgraph.bench.beans.EdgeMapBean;
-import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
-import com.ibm.janusgraph.bench.beans.GSONSchema;
-import com.ibm.janusgraph.bench.beans.IndexBean;
-import com.ibm.janusgraph.bench.beans.PropertyKeyBean;
-import com.ibm.janusgraph.bench.beans.RelationBean;
-import com.ibm.janusgraph.bench.beans.VertexLabelBean;
-import com.ibm.janusgraph.bench.beans.VertexMapBean;
-import com.ibm.janusgraph.bench.beans.VertexTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.BatchImporterDataMap;
+import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
+import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeLabelBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeMapBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.GSONSchema;
+import com.ibm.janusgraph.utils.generator.bean.IndexBean;
+import com.ibm.janusgraph.utils.generator.bean.PropertyKeyBean;
+import com.ibm.janusgraph.utils.generator.bean.RelationBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexLabelBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexMapBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexTypeBean;
 public class GSONUtil {
 
     public static GSONSchema loadSchema(String gsonSchemaFile){
@@ -65,8 +65,10 @@ public class GSONUtil {
                 vertex.maps.put("[edge_left]", subMap);
                 subMap2.put("Right", relation.right + ".node_id");
                 vertex.maps.put("[edge_right]", subMap2);
-                for (String key: type.columns.keySet()){
-                    vertex.maps.put(key, key);
+                if (type.columns != null) {
+                    for (String key : type.columns.keySet()) {
+                        vertex.maps.put(key, key);
+                    } 
                 }
             bmDataMap.edgeMap.put(edgeFileName,vertex.maps);
             }   
@@ -116,21 +118,21 @@ public class GSONUtil {
             EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name);
             gson.edgeLabels.add(edgeLabel);
             
-            //propertKeys
-            for (Entry<String,ColumnBean> col : type.columns.entrySet()){
-                String propertyKeyName = col.getKey();
-                String propertyKeyType = col.getValue().dataType;
-                boolean keyIndexType = col.getValue().composit;
-                String indexOnly = col.getValue().indexOnly;
-                String mixedIndex = col.getValue().mixedIndex;
-                gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName,propertyKeyType));
-                
-                //add edgeIndexes
-                IndexBean index = new IndexBean(propertyKeyName,
-                                                Arrays.asList(propertyKeyName),
-                                                keyIndexType, 
-                                                false, indexOnly, mixedIndex);
-                gson.edgeIndexes.add(index);
+            if (type.columns != null) {
+                //propertKeys
+                for (Entry<String, ColumnBean> col : type.columns.entrySet()) {
+                    String propertyKeyName = col.getKey();
+                    String propertyKeyType = col.getValue().dataType;
+                    boolean keyIndexType = col.getValue().composit;
+                    String indexOnly = col.getValue().indexOnly;
+                    String mixedIndex = col.getValue().mixedIndex;
+                    gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName, propertyKeyType));
+
+                    //add edgeIndexes
+                    IndexBean index = new IndexBean(propertyKeyName, Arrays.asList(propertyKeyName), keyIndexType,
+                            false, indexOnly, mixedIndex);
+                    gson.edgeIndexes.add(index);
+                } 
             }
         }
         return gson;

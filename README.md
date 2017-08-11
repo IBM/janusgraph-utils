@@ -9,7 +9,11 @@ Benchmark tool for generating customized JanusGraph performance workload.
 #### How to Customize database size
 	VertexTypes: contains any number of different vertex labels
 		- name: change the name of vertex label
-		- columns : may contain any number of columns(property keys). Column names, dataType, and composit are all customizable
+		- columns: may contain any number of columns(property keys). 
+			- Key: Name of column
+			- dataType: String, Long, Integer
+			- dataSubType: options are "Name" or "shakespear". This generate some fake data
+			- composit: create composit index or not
 		- row: change number of vertex of the named label
 	EdgeTypes: contains any number of different vertex labels
 		- name: change the first edgelabel name

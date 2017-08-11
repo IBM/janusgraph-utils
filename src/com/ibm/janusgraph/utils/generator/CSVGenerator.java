@@ -1,10 +1,11 @@
-package com.ibm.janusgraph.bench;
+package com.ibm.janusgraph.utils.generator;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +17,13 @@ import org.apache.commons.lang3.RandomUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.janusgraph.bench.beans.CSVConfig;
-import com.ibm.janusgraph.bench.beans.CSVIdBean;
-import com.ibm.janusgraph.bench.beans.ColumnBean;
-import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
-import com.ibm.janusgraph.bench.beans.RelationBean;
-import com.ibm.janusgraph.bench.beans.VertexTypeBean;
+import com.github.javafaker.Faker;
+import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
+import com.ibm.janusgraph.utils.generator.bean.CSVIdBean;
+import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.RelationBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexTypeBean;
 
 public class CSVGenerator {
     private CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
@@ -52,7 +54,21 @@ public class CSVGenerator {
                 rec.add(TIME_FORMAT.format(cal.getTime()).toString());
             }
             else{
-                rec.add(RandomStringUtils.randomAlphabetic(10));
+                if ( value.dataSubType != null && value.dataSubType.toLowerCase().equals("name")) {
+                    Faker faker = new Faker();
+                    rec.add(faker.name().fullName());
+                }else if (value.dataSubType != null && value.dataSubType.toLowerCase().equals("shakespeare")) {
+                    Faker faker = new Faker();
+                    Map<Integer, Runnable> roles = new HashMap<>();
+                    // Populate commands map
+                    roles.put(1, () -> rec.add(faker.shakespeare().asYouLikeItQuote()));
+                    roles.put(2, () -> rec.add(faker.shakespeare().hamletQuote()));
+                    roles.put(3, () -> rec.add(faker.shakespeare().kingRichardIIIQuote()));
+                    roles.put(4, () -> rec.add(faker.shakespeare().romeoAndJulietQuote()));
+                    roles.get(RandomUtils.nextInt(1,5)).run();
+                }else {
+                    rec.add(RandomStringUtils.randomAlphabetic(10));
+                }
             }
         });
         return rec;
@@ -62,7 +78,9 @@ public class CSVGenerator {
         ArrayList<String> header = new ArrayList<String>();
         header.add("Left");
         header.add("Right");
-        header.addAll(type.columns.keySet());
+        if (type.columns != null) {
+            header.addAll( type.columns.keySet());
+        }
         try {
             for (RelationBean relation: type.relations) {
                 /*Ex: /tmp/left-right_E1_edges.csv    */
@@ -75,7 +93,9 @@ public class CSVGenerator {
                     ArrayList<Object> record = new ArrayList<Object>();
                     record.add(idFactory.getRandomIdForVertexType(relation.left));
                     record.add(idFactory.getRandomIdForVertexType(relation.right));
-                    record.addAll(generateOneRecord(type.columns));
+                    if (type.columns != null) {
+                        record.addAll(generateOneRecord(type.columns));
+                    }
                     csvFilePrinter.printRecord(record);
                 }
                 //add supernodes
@@ -90,7 +110,9 @@ public class CSVGenerator {
                                 ArrayList<Object> record = new ArrayList<Object>();
                                 record.add(v);
                                 record.add(idFactory.getRandomIdForVertexType(relation.right));
-                                record.addAll(generateOneRecord(type.columns));
+                                if (type.columns != null) {
+                                    record.addAll(generateOneRecord(type.columns));
+                                }
                                 csvFilePrinter.printRecord(record);
                             }
                         }
