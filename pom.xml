@@ -26,7 +26,7 @@
 						<manifest>
 							<classpathPrefix>lib/</classpathPrefix>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.ibm.janusgraph.bench.JanusGraphBench</mainClass>
+							<mainClass>com.ibm.janusgraph.utils.generator.JanusGraphBench</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
