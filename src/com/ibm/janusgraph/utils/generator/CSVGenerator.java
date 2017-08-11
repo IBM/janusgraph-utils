@@ -1,4 +1,4 @@
-package com.ibm.janusgraph.bench;
+package com.ibm.janusgraph.utils.generator;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,12 +18,12 @@ import org.apache.commons.lang3.RandomUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
-import com.ibm.janusgraph.bench.beans.CSVConfig;
-import com.ibm.janusgraph.bench.beans.CSVIdBean;
-import com.ibm.janusgraph.bench.beans.ColumnBean;
-import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
-import com.ibm.janusgraph.bench.beans.RelationBean;
-import com.ibm.janusgraph.bench.beans.VertexTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
+import com.ibm.janusgraph.utils.generator.bean.CSVIdBean;
+import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.RelationBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexTypeBean;
 
 public class CSVGenerator {
     private CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");

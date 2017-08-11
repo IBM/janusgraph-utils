@@ -1,4 +1,4 @@
-package com.ibm.janusgraph.bench.beans;
+package com.ibm.janusgraph.utils.generator.bean;
 
 import java.util.ArrayList;
 import java.util.List;

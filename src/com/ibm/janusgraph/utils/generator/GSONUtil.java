@@ -1,4 +1,4 @@
-package com.ibm.janusgraph.bench;
+package com.ibm.janusgraph.utils.generator;
 
 import java.io.File;
 import java.util.Arrays;
@@ -7,19 +7,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.janusgraph.bench.beans.BatchImporterDataMap;
-import com.ibm.janusgraph.bench.beans.CSVConfig;
-import com.ibm.janusgraph.bench.beans.ColumnBean;
-import com.ibm.janusgraph.bench.beans.EdgeLabelBean;
-import com.ibm.janusgraph.bench.beans.EdgeMapBean;
-import com.ibm.janusgraph.bench.beans.EdgeTypeBean;
-import com.ibm.janusgraph.bench.beans.GSONSchema;
-import com.ibm.janusgraph.bench.beans.IndexBean;
-import com.ibm.janusgraph.bench.beans.PropertyKeyBean;
-import com.ibm.janusgraph.bench.beans.RelationBean;
-import com.ibm.janusgraph.bench.beans.VertexLabelBean;
-import com.ibm.janusgraph.bench.beans.VertexMapBean;
-import com.ibm.janusgraph.bench.beans.VertexTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.BatchImporterDataMap;
+import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
+import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeLabelBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeMapBean;
+import com.ibm.janusgraph.utils.generator.bean.EdgeTypeBean;
+import com.ibm.janusgraph.utils.generator.bean.GSONSchema;
+import com.ibm.janusgraph.utils.generator.bean.IndexBean;
+import com.ibm.janusgraph.utils.generator.bean.PropertyKeyBean;
+import com.ibm.janusgraph.utils.generator.bean.RelationBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexLabelBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexMapBean;
+import com.ibm.janusgraph.utils.generator.bean.VertexTypeBean;
 public class GSONUtil {
 
     public static GSONSchema loadSchema(String gsonSchemaFile){
