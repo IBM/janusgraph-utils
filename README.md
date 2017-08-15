@@ -43,6 +43,5 @@ Usage:
       <data-files-directory>: Relative directory where the data files are located
       <schema.json>: JSON file defining the schema of the graph
       <data-mapping.json>: mapping file defining the relationship between the CSV/s fields and the graph
-
-    '''./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json'''
-#### Example config:
+Example:
+    ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
