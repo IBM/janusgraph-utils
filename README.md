@@ -49,3 +49,5 @@ Benchmark tools for generating and importing customized JanusGraph performance w
       <data-mapping.json>: mapping file defining the relationship between the CSV/s fields and the graph
     Example:
     ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
+    Using different JanusGraph lib
+    export JANUSGRAPH_HOME=/path-to-your-lib; ./run.sh gencsv csv-conf/tiny_config.json /tmp

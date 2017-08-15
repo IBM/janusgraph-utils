@@ -5,6 +5,13 @@ cd ${sDir}
 sDir=`pwd -P`
 popd > /dev/null
 
+if [ -z $JANUSGRAPH_HOME ]
+then
+	JANUSGRAPH_HOME=$sDir
+else
+	echo "JanusGraph lib path is set to $JANUSGRAPH_HOME"
+fi
+
 usage(){
 cat <<EOF
 Usage: $0 [options]
@@ -13,9 +20,7 @@ options:
 	import	Import CSV to Janusgraph
 EOF
 }
-echo $sDir
-CP="${sDir}/lib/commons-csv-1.4.jar:${sDir}/conf:${sDir}/lib/*"
-echo $CP
+CP="${sDir}/lib/commons-csv-1.4.jar:${sDir}/conf:${JANUSGRAPH_HOME}/lib/*"
 class=$1
 case $class in
     gencsv)
