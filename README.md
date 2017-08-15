@@ -1,12 +1,16 @@
 # JanusGraph Utilities
 Benchmark tools for generating and importing customized JanusGraph performance workload.
 # How to Use:
-#### Step 1 Download and Build
+## Download and Build
     git clone git@github.ibm.com:htchang/JanusGraphBench.git
     cd JanusGraphBench;mvn package
-#### Step 2 Generate CSV files, schema, and datamapper
-    ./run.sh gencsv csv-conf/tiny_config.json /tmp
-#### CSV config options:
+## Generate CSV files, schema, and datamapper
+    Generate customized CSV for importing to JanusGraph.
+	Usage: 
+	  JanusGraphBench <csv-config-file> <mapper-schema-output-directory>
+	Example:
+	  ./run.sh gencsv csv-conf/tiny_config.json /tmp
+#### CSV config file options:
 	VertexTypes: contains any number of different vertex labels
 		- name: change the name of vertex label
 		- columns: may contain any number of columns(property keys). 
@@ -28,20 +32,20 @@ Benchmark tools for generating and importing customized JanusGraph performance w
 			- supernode: nodes have many edges
 				- vertices: n where n is the first n nodes of left
 				- edges: additional edges are added to each of the n nodes
-#### Step 3 Import CSV file to JanusGraph
-JanusGraphBatchImporter is a tool that imports bulk data into JanusGraph using multiple CSV files for the data and json config files to define the schema and mapping between schema and data. It uses multiple workers in order to achieve full speed of import of the data.
-JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4.jar
+## Import CSV file to JanusGraph
+    JanusGraphBatchImporter is a tool that imports bulk data into JanusGraph using multiple CSV files for the data and json config files to define the schema and mapping between schema and data. It uses multiple workers in order to achieve full speed of import of the data.
+    JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4.jar
 
-In order to use under Linux:
+    In order to use under Linux:
 
-Edit conf/batch_import.properties file to configure the importer
+    Edit conf/batch_import.properties file to configure the importer
 
-Usage:
+    Usage:
       run.sh import <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>
 
       <janusgraph-config-file>: Properties file with the JanuGraph configuration
       <data-files-directory>: Relative directory where the data files are located
       <schema.json>: JSON file defining the schema of the graph
       <data-mapping.json>: mapping file defining the relationship between the CSV/s fields and the graph
-Example:
+    Example:
     ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
