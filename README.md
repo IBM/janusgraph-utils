@@ -1,12 +1,12 @@
-# JanusGraphBench
-Benchmark tool for generating customized JanusGraph performance workload.
+# JanusGraph Utilities
+Benchmark tools for generating and importing customized JanusGraph performance workload.
 # How to Use:
-#### Step 1 Download, Build, and Run from source with Maven
+#### Step 1 Download and Build
     git clone git@github.ibm.com:htchang/JanusGraphBench.git
     cd JanusGraphBench;mvn package
-    java -jar target/JanusGraphBench-0.0.1-SNAPSHOT.jar config/tiny_config.json /tmp
-#### Step 2 Populate the database with the [JanusGraphBatchImport] (https://github.com/sdmonov/JanusGraphBatchImporter)
-#### How to Customize database size
+#### Step 2 Generate CSV files, schema, and datamapper
+    ./run.sh gencsv csv-config/tiny_config.json /tmp
+#### CSV config options:
 	VertexTypes: contains any number of different vertex labels
 		- name: change the name of vertex label
 		- columns: may contain any number of columns(property keys). 
@@ -28,37 +28,21 @@ Benchmark tool for generating customized JanusGraph performance workload.
 			- supernode: nodes have many edges
 				- vertices: n where n is the first n nodes of left
 				- edges: additional edges are added to each of the n nodes
+#### Step 3 Import CSV file to JanusGraph
+JanusGraphBatchImporter is a tool that imports bulk data into JanusGraph using multiple CSV files for the data and json config files to define the schema and mapping between schema and data. It uses multiple workers in order to achieve full speed of import of the data.
+JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4.jar
+
+In order to use under Linux:
+
+Edit conf/batch_import.properties file to configure the importer
+
+Usage:
+      run.sh import <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>
+
+      <janusgraph-config-file>: Properties file with the JanuGraph configuration
+      <data-files-directory>: Relative directory where the data files are located
+      <schema.json>: JSON file defining the schema of the graph
+      <data-mapping.json>: mapping file defining the relationship between the CSV/s fields and the graph
+
+    '''./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json'''
 #### Example config:
-```
-{
-  "VertexTypes": [
-    {
-      "name": "T1",
-      "columns": {
-        "T1-P1": {"dataType":"String","composit":true}
-      },
-      "row": 10
-    },
-    {
-      "name": "T2",
-      "columns": {
-        "T2-P1": {"dataType":"String","composit":true},
-        "T2-P2": {"dataType":"Integer","composit":true}
-      },
-      "row": 10
-    }
-  ],
-  "EdgeTypes": [
-    {
-      "name": "E1",
-      "columns": {
-        "E1-P1": {"dataType":"Long","composit":true}
-      },
-      "relations": [
-        {"left": "T1", "right": "T2", "row": 10 },
-        {"left": "T2", "right": "T1", "row": 10 }
-      ]
-    }
-  ]
-}
-```
