@@ -5,7 +5,7 @@ Benchmark tools for generating and importing customized JanusGraph performance w
     git clone git@github.ibm.com:htchang/JanusGraphBench.git
     cd JanusGraphBench;mvn package
 #### Step 2 Generate CSV files, schema, and datamapper
-    ./run.sh gencsv csv-config/tiny_config.json /tmp
+    ./run.sh gencsv csv-conf/tiny_config.json /tmp
 #### CSV config options:
 	VertexTypes: contains any number of different vertex labels
 		- name: change the name of vertex label
