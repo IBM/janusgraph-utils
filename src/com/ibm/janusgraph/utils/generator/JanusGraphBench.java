@@ -15,7 +15,7 @@ public class JanusGraphBench {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         if (null == args || args.length < 2) {
-            System.err.println("Usage: JanusGraphBench <benchmark-config-file> <mapper-schema-output-directory>");
+            System.err.println("Usage: JanusGraphBench <csv-config-file> <mapper-schema-output-directory>");
             System.exit(1);
         }
        String csvConfPath = args[0];
