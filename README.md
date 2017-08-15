@@ -1,11 +1,22 @@
-# Gremlin groovy utility script [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
+# Utility Tools for JanusGraph [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
 
-Provide several utility scripts that could be used in gremlin console of
-Janusgraph, including:
+Provide several utility tools that could be used for Janusgraph, including:
 
-- JanusGraphModelImporter: import GraphSON schema document into JanusGraph
+- JanusGraphModelImporter: a groovy script that imports GraphSON schema document into JanusGraph
 - Synthetic data generator: a tools for generating synthetic data in CVS format
 - Data importor: a tool to import data into JanusGraph in CVS format
+
+## Download and Build
+
+Download the files from git repo and get into the directory:
+```
+git clone https://github.com/IBM/janusgraph-utils.git
+cd janusgraph-utils
+```
+
+Use maven to build this project:
+
+`mvn package`
 
 ### JanusGraphModelImporter
 
@@ -169,53 +180,57 @@ vertex-centric index is defined in an object with the following format:
     "order": "incr|decr"
 }
 ```
+
 ### Synethic Data Generator
-#### Download and Build
-    `mvn package`
 #### Generate CSV files, schema, and datamapper
-    Generate customized CSV for importing to JanusGraph.
-    - Usage:  
-      JanusGraphBench <csv-config-file> <mapper-schema-output-directory>
-      Example:  
+Generate customized CSV for importing to JanusGraph.
+- Usage:  
+  `JanusGraphBench <csv-config-file> <mapper-schema-output-directory>`
+
+Example:  
       `./run.sh gencsv csv-conf/tiny_config.json /tmp`
 #### CSV config file options:
-	VertexTypes: contains any number of different vertex labels
-		- name: change the name of vertex label
-		- columns: may contain any number of columns(property keys). 
-			- Key: Name of column
-			- dataType: String, Long, Integer
-			- dataSubType: options are "Name" or "shakespear". This generate some fake data
-			- composit: create composit index or not
-		- row: change number of vertex of the named label
-	EdgeTypes: contains any number of different vertex labels
-		- name: change the first edgelabel name
-		- columns: may contain any number of columns(edge property keys). 
-			- names: any string 
-			- dataType: String, Long, Integer, and Date. 
-			- composit: true or false
-			- mixedIndex: any String (default should be "search") 
-	-	- relations: Defines how the named edge relations can happen and number of occurrences.
-			- left: the outV of an edge
-			- right: the inV of an edge
-			- supernode: nodes have many edges
-				- vertices: n where n is the first n nodes of left
-				- edges: additional edges are added to each of the n nodes
+- VertexTypes: contains any number of different vertex labels
+  - name: change the name of vertex label
+  - columns: may contain any number of columns(property keys)
+    - Key: Name of column
+    - dataType: String, Long, Integer
+    - dataSubType: options are "Name" or "shakespear". This generate some fake data
+    - composit: create composit index or not
+    - row: change number of vertex of the named label
+- EdgeTypes: contains any number of different vertex labels
+  - name: change the first edgelabel name
+  - columns: may contain any number of columns(edge property keys)
+    - names: any string 
+    - dataType: String, Long, Integer, and Date. 
+    - composit: true or false
+    - mixedIndex: any String (default should be "search") 
+- relations: Defines how the named edge relations can happen and number of occurrences.
+  - left: the outV of an edge
+  - right: the inV of an edge
+  - supernode: nodes have many edges
+    - vertices: n where n is the first n nodes of left
+    - edges: additional edges are added to each of the n nodes
+    
 ### Import CSV file to JanusGraph
-    JanusGraphBatchImporter is a tool that imports bulk data into JanusGraph using multiple CSV files for the data and json config files to define the schema and mapping between schema and data. It uses multiple workers in order to achieve full speed of import of the data.
-    JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4.jar
+JanusGraphBatchImporter is a tool that imports bulk data into JanusGraph using multiple CSV files for the data and json config files to define the schema and mapping between schema and data. It uses multiple workers in order to achieve full speed of import of the data.
 
-    In order to use under Linux:
+JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4.jar
 
-    Edit conf/batch_import.properties file to configure the importer
+In order to use under Linux:
+- Edit conf/batch_import.properties file to configure the importer
+- Usage:  
+  `run.sh import <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>`
+  - `<janusgraph-config-file>`: Properties file with the JanuGraph configuration
+  - `<data-files-directory>:` Relative directory where the data files are located
+  - `<schema.json>:` JSON file defining the schema of the graph
+  - `<data-mapping.json>`: mapping file defining the relationship between the CSV/s fields and the graph
 
-    Usage:
-      run.sh import <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>
+- Example:
+ `./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json`
 
-      <janusgraph-config-file>: Properties file with the JanuGraph configuration
-      <data-files-directory>: Relative directory where the data files are located
-      <schema.json>: JSON file defining the schema of the graph
-      <data-mapping.json>: mapping file defining the relationship between the CSV/s fields and the graph
-    Example:
-    ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
-    Using different JanusGraph lib
-    export JANUSGRAPH_HOME=/path-to-your-lib; ./run.sh gencsv csv-conf/tiny_config.json /tmp
+- Using different JanusGraph lib  
+  ```
+  export JANUSGRAPH_HOME=/path-to-your-lib
+  ./run.sh import /root/path-to-non-release-janusgraph/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
+  ````
