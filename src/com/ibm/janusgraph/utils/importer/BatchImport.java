@@ -15,7 +15,7 @@ public class BatchImport {
         }
 
         JanusGraph graph = JanusGraphFactory.open(args[0]);
-        new SchemaLoader(graph).loadFile(args[2]);
+        new SchemaLoader().loadSchema(graph,args[2]);
         new DataLoader(graph).loadVertex(args[1], args[3]);
         new DataLoader(graph).loadEdges(args[1], args[3]);
         graph.close();
