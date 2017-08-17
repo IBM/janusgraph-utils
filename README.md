@@ -235,7 +235,7 @@ In order to use under Linux:
  `./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json`
 
 - Using different JanusGraph lib  
+
+  export JANUSGRAPH_HOME=/path-to-your-janusgraph-home
+  ./run.sh import /root/path-to-your-janusgraph-home/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
   ```
-  export JANUSGRAPH_HOME=/path-to-your-lib
-  ./run.sh import /root/path-to-non-release-janusgraph/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
-  ````
