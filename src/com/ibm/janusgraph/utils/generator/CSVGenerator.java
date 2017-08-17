@@ -2,6 +2,7 @@ package com.ibm.janusgraph.utils.generator;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +39,6 @@ public class CSVGenerator {
     public CSVGenerator(String csvConfPath){
         this.csvConf = loadConfig(csvConfPath);
         this.idFactory = new CSVIdBean(csvConf.VertexTypes);
-        
     }
     
     private ArrayList<Object> generateOneRecord(Map<String,ColumnBean> columns){
@@ -50,8 +50,33 @@ public class CSVGenerator {
                 //rec.add(randomInteger(RANGE[0],RANGE[1],randomInt));
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
             }else if (value.dataType.toLowerCase().equals("date")){
-                cal.setTimeInMillis(RandomUtils.nextLong(RANDOM_TIME_RANGE[0], RANDOM_TIME_RANGE[1]));
-                rec.add(TIME_FORMAT.format(cal.getTime()).toString());
+                if (value.dateFormat != null) {
+                    this.TIME_FORMAT.applyPattern(value.dateFormat);
+                }
+                if (value.dateRange != null) {
+                    try {
+                        this.RANDOM_TIME_RANGE[0] =
+                                TIME_FORMAT.parse(value.dateRange.get("from")
+                                            ).getTime();
+                        this.RANDOM_TIME_RANGE[1] =
+                                TIME_FORMAT.parse(value.dateRange.get("to")
+                                            ).getTime();
+                    } catch (ParseException e) {
+                        // TODO Auto-generated catch block
+                        System.out.println(e.getMessage() +
+                                ". the date cannot be parse using "+TIME_FORMAT.toPattern());
+                        System.exit(1);
+                        
+                    }
+                }
+                cal.setTimeInMillis(
+                        RandomUtils.nextLong(this.RANDOM_TIME_RANGE[0],
+                                             this.RANDOM_TIME_RANGE[1]));
+                    rec.add(TIME_FORMAT.format(cal.getTime()).toString());
+                //}else {
+                //    rec.add(cal.getTimeInMillis());
+                //}
+                
             }
             else{
                 if ( value.dataSubType != null && value.dataSubType.toLowerCase().equals("name")) {
