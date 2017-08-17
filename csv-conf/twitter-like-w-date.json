@@ -1,0 +1,56 @@
+{
+  "VertexTypes": [
+    {
+      "name": "User",
+      "columns": {
+        "User": {"dataType":"String", "dataSubType":"name", "composit":true}
+      },
+      "row": 100
+    },
+    {
+      "name": "Message",
+      "columns": {
+        "Message": {"dataType":"String", "dataSubType":"shakespeare", "composit":true}
+      },
+      "row": 1000
+    }
+  ],
+  "EdgeTypes": [
+    {
+      "name": "Follow",
+      "relations": [
+        {"left": "User", "right": "User", "row": 10000, "supernode":{"vertices":1, "edges":500}  }
+      ]
+    },
+    {
+      "name": "Like",
+      "relations": [
+        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500 } }
+      ]
+    },
+    {
+      "name": "Retweet",
+      "relations": [
+        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500} }
+      ]
+    },
+    {
+      "name": "Tweet",
+      "columns": {
+        "Date": {
+          "dataType":"Date","composit":true,
+          "dateRange":{"from":"01-Jan-2015", "to":"31-Dec-2017"}
+        }
+      },
+      "relations": [
+        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500} }
+      ]
+    },
+    {
+      "name": "Mention",
+      "relations": [
+        {"left": "Message", "right": "User", "row": 10000, "supernode":{"vertices":1, "edges":500}}
+      ]
+    }
+  ]
+}

@@ -193,16 +193,21 @@ Example:
 - VertexTypes: contains any number of different vertex labels
   - name: change the name of vertex label
   - columns: may contain any number of columns(property keys)
-    - Key: Name of column
-    - dataType: String, Long, Integer
+    - [String]: Name of column
+    - dataType: String, Long, Integer,Date
+    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format unless specified in the dateFormat
+    - dateFormat: support JAVA SimpleDateFormat patterns. Default: "dd-MMM-yyyy" 	
     - dataSubType: options are "Name" or "shakespear". This generate some fake data
     - composit: create composit index or not
     - row: change number of vertex of the named label
 - EdgeTypes: contains any number of different vertex labels
   - name: change the first edgelabel name
   - columns: may contain any number of columns(edge property keys)
-    - names: any string 
-    - dataType: String, Long, Integer, and Date. 
+    - [String]: Name of column 
+    - dataType: String, Long, Integer, and Date.
+    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format unless specified in the dateF
+ormat
+    - dateFormat: support JAVA SimpleDateFormat patterns. Default: "dd-MMM-yyyy"
     - composit: true or false
     - mixedIndex: any String (default should be "search") 
 - relations: Defines how the named edge relations can happen and number of occurrences.
