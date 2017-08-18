@@ -8,10 +8,19 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class IndexBean{
     public String name = null;
     public List<String> propertyKeys;
-    public boolean composite = true;
+    public boolean composite = false;
     public boolean unique = false;
     public String indexOnly = null;
     public String mixedIndex = null;
+    /**
+     * Construct an indexBean
+     * @param name string name of the index
+     * @param propertyKeys list property key(s) used for indexing
+     * @param composite boolean composit index if true
+     * @param unique boolean if key is unique
+     * @param indexOnly string name of a label
+     * @param mixedIndex string name of an external index backend
+     */
     public IndexBean(
             String          name,
             List<String>    propertyKeys,

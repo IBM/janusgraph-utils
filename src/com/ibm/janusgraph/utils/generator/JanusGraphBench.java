@@ -18,10 +18,15 @@ public class JanusGraphBench {
             System.err.println("Usage: JanusGraphBench <csv-config-file> <mapper-schema-output-directory>");
             System.exit(1);
         }
-       String csvConfPath = args[0];
-       prepareCSV(csvConfPath, args[1]);
-       GSONUtil.writeToFile(args[1] + "/schema.json",GSONUtil.configToSchema(csvConfPath));
-       GSONUtil.writeToFile(args[1] + "/datamapper.json", GSONUtil.toDataMap(csvConfPath));
+       try {
+        String csvConfPath = args[0];
+           prepareCSV(csvConfPath, args[1]);
+           GSONUtil.writeToFile(args[1] + "/schema.json",GSONUtil.configToSchema(csvConfPath));
+           GSONUtil.writeToFile(args[1] + "/datamapper.json", GSONUtil.toDataMap(csvConfPath));
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
+        System.exit(1);
+    }
        
     }
 }

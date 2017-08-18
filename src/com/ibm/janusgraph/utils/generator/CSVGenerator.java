@@ -62,11 +62,9 @@ public class CSVGenerator {
                                 TIME_FORMAT.parse(value.dateRange.get("to")
                                             ).getTime();
                     } catch (ParseException e) {
-                        // TODO Auto-generated catch block
-                        System.out.println(e.getMessage() +
-                                ". the date cannot be parse using "+TIME_FORMAT.toPattern());
-                        System.exit(1);
-                        
+                        throw new RuntimeException(e.getMessage() +
+                                ". the date cannot be parse using " +
+                                TIME_FORMAT.toPattern());
                     }
                 }
                 cal.setTimeInMillis(
@@ -190,7 +188,6 @@ public class CSVGenerator {
     static CSVConfig loadConfig(String jsonConfFile){
         ObjectMapper confMapper = new ObjectMapper();
         try {
-            
             CSVConfig conf = confMapper.readValue(new File(jsonConfFile), CSVConfig.class);
             isValidConfig(conf);
             return conf;
