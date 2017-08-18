@@ -10,7 +10,7 @@
     {
       "name": "Message",
       "columns": {
-        "Message": {"dataType":"String", "dataSubType":"shakespeare", "composit":true}
+        "Message": {"dataType":"String", "dataSubType":"shakespeare", "composit":true, "mixedIndex":"search"}
       },
       "row": 1000
     }

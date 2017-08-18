@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ibm.janusgraph.utils.generator.bean.BatchImporterDataMap;
 import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
 import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
@@ -33,6 +34,7 @@ public class GSONUtil {
     
     public static void writeToFile(String jsonOutputFile,Object gson){
         ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             mapper.writeValue(new File(jsonOutputFile), gson);
             System.out.println("Generated: "+ jsonOutputFile);
@@ -76,65 +78,114 @@ public class GSONUtil {
         return bmDataMap;
     }
     public static GSONSchema configToSchema(String csvConfPath){
-        GSONSchema gson = new GSONSchema();
+        GSONSchema gsonschema = new GSONSchema();
         CSVConfig csvConf = CSVGenerator.loadConfig(csvConfPath);
+        
         //manually add node_id as a unique propertyKey and index
         PropertyKeyBean nodeIdKey = new PropertyKeyBean("node_id", "Integer");
-        gson.propertyKeys.add(nodeIdKey);
-        IndexBean nodeIdIndex = new IndexBean("node_id", Arrays.asList("node_id"), true, true, null, null);
-        gson.vertexIndexes.add(nodeIdIndex);
+        gsonschema.propertyKeys.add(nodeIdKey);
+        IndexBean nodeIdIndex = new IndexBean(
+                                    "node_id_comp", 
+                                    Arrays.asList("node_id"),
+                                    true, 
+                                    true, 
+                                    null, 
+                                    null);
+        gsonschema.vertexIndexes.add(nodeIdIndex);
         
+        //Extract columns under VertexTypes from csv config and add to propertyKeys 
         for (VertexTypeBean type : csvConf.VertexTypes){
             //add vertexLabels
             VertexLabelBean vertexLabel = new VertexLabelBean(type.name);
-            gson.vertexLabels.add(vertexLabel);
+            gsonschema.vertexLabels.add(vertexLabel);
             
             //add propertyKeys
             for (Entry<String,ColumnBean> col : type.columns.entrySet()){
                 String propertyKeyName = col.getKey();
                 String propertyKeyType = col.getValue().dataType;
-                boolean keyIndexType = col.getValue().composit;
+                boolean compositIndex = col.getValue().composit;
                 String indexOnly = col.getValue().indexOnly;
                 String mixedIndex = col.getValue().mixedIndex;
                 
-                //TODO test duplicated keys
-                if (!gson.vertexIndexes.contains(col.getKey()))
-                        gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName,propertyKeyType));
+                //test key does not exist before adding
+                if (! gsonschema.vertexIndexes.contains(propertyKeyName))
+                    gsonschema.propertyKeys.add(
+                    new PropertyKeyBean(propertyKeyName,propertyKeyType));
                 
-                //add vertexIndexes
-                IndexBean index = new IndexBean(propertyKeyName,
-                                                Arrays.asList(propertyKeyName),
-                                                keyIndexType, 
-                                                false,indexOnly,mixedIndex);
-              //TODO test duplicated keys
-                if (!gson.vertexIndexes.contains(index.name))
-                    gson.vertexIndexes.add(index);
+                //add composit vertex indexes if any
+                if(compositIndex == true) {
+                    IndexBean index = new IndexBean(
+                                        String.join("_", propertyKeyName, "comp"),
+                                        Arrays.asList(propertyKeyName),
+                                        compositIndex, 
+                                        false,
+                                        indexOnly,
+                                        null);
+                    if (! gsonschema.vertexIndexes.contains(index.name)) {
+                        gsonschema.vertexIndexes.add(index);
+                    }
+                }
+                //add mixed vertex index if any
+                if(mixedIndex != null) {
+                    IndexBean index = new IndexBean(
+                                        String.join("_", propertyKeyName, "mixed"),
+                                        Arrays.asList(propertyKeyName),
+                                        false,
+                                        false,
+                                        indexOnly,
+                                        mixedIndex);
+                    if (! gsonschema.vertexIndexes.contains(index.name)) {
+                        gsonschema.vertexIndexes.add(index);
+                    }
+                }
             }
-            
         }
         
+        //extract edge properties from csv config and add to propertyKeys
         for (EdgeTypeBean type : csvConf.EdgeTypes){
-            //add edgeLabels
             EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name);
-            gson.edgeLabels.add(edgeLabel);
-            
+            gsonschema.edgeLabels.add(edgeLabel);
             if (type.columns != null) {
-                //propertKeys
+                //extract columns and add to propertKeys
                 for (Entry<String, ColumnBean> col : type.columns.entrySet()) {
                     String propertyKeyName = col.getKey();
                     String propertyKeyType = col.getValue().dataType;
-                    boolean keyIndexType = col.getValue().composit;
+                    boolean compositIndex = col.getValue().composit;
                     String indexOnly = col.getValue().indexOnly;
                     String mixedIndex = col.getValue().mixedIndex;
-                    gson.propertyKeys.add(new PropertyKeyBean(propertyKeyName, propertyKeyType));
+                    gsonschema.propertyKeys.add(new PropertyKeyBean(
+                                                        propertyKeyName,
+                                                        propertyKeyType));
 
-                    //add edgeIndexes
-                    IndexBean index = new IndexBean(propertyKeyName, Arrays.asList(propertyKeyName), keyIndexType,
-                            false, indexOnly, mixedIndex);
-                    gson.edgeIndexes.add(index);
+                    //add composit edgeIndex if any
+                    if (compositIndex == true) {
+                        IndexBean index = new IndexBean(
+                                              String.join("_", propertyKeyName, "comp"),
+                                              Arrays.asList(propertyKeyName),
+                                              compositIndex,
+                                              false,
+                                              indexOnly,
+                                              mixedIndex);
+                    if (! gsonschema.edgeIndexes.contains(index.name)) {
+                            gsonschema.edgeIndexes.add(index);
+                        }
+                    }
+                    //add mixed edgeIndex if any
+                    if(mixedIndex != null) {
+                        IndexBean index = new IndexBean(
+                                            String.join("_", propertyKeyName, "mixed"),
+                                            Arrays.asList(propertyKeyName),
+                                            false,
+                                            false,
+                                            indexOnly,
+                                            mixedIndex);
+                        if (! gsonschema.edgeIndexes.contains(index.name)) {
+                            gsonschema.edgeIndexes.add(index);
+                        }
+                    }
                 } 
             }
         }
-        return gson;
+        return gsonschema;
     }
 }
