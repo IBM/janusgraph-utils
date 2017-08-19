@@ -1,0 +1,40 @@
+Note: The following queries assume the super user name is 'Indiana Jones' and date-help.groovy is loaded in JanusGraph console or server.
+
+1. Who follows ‘Indiana Jones’?
+g.V().has('User', 'Indiana Jones').in('Follow').values('User')
+
+2. Find Indiana Jones’ tweets
+g.V().has('User', 'Indiana Jones').out('Tweet').values('Message')
+
+3. Find Indiana Jones’ tweets in Jan 2017
+g.V().has('User', 'Indiana Jones').outE('Tweet').has('Date',between(createDate(2017,1,1),createDate(2017,2,1))).inV().values('Message')
+
+4. Who tweeted 'Romeo'?
+g.V().has('Message', textContains('Romeo')).in('Tweet').dedup().values('User')
+
+5. Who tweeted 'Romeo' in Jan 2017?
+g.V().has('Message', textContains('Romeo')).inE('Tweet').has('Date',between(createDate(2017,1,1),createDate(2017,2,1))).outV().dedup().values('User')
+
+6. Who likes Indiana Jones' Tweets
+g.V().has('User', 'Indiana Jones').out('Tweet').in('Like').dedup().values('User')
+
+7. Find Indiana Jones' followers who retweeted Indiana Jones's messages
+g.V().has('User', 'Indiana Jones').in('Follow').as('a').out('Retweet').in('Tweet').has('User', 'Indiana Jones').select('a').values('User').dedup()
+
+8. Find Indiana Jones' messages that his followers retweeted 
+g.V().has("User", "Indiana Jones").in("Follow").out("Retweet").as('a').in("Tweet").has("User", "Indiana Jones").select('a').by('Message').dedup()
+
+9. Find Indiana Jones' followers and retweeted Angel's messages
+g.V().has('User', 'Indiana Jones').in('Follow').has('User',not(within('Indiana Jones'))).as('follower').out('Retweet').as('retweet').in('Tweet').has('User', 'Indiana Jones').sideEffect{println "${it.path().get('follower').value('User')} retweeted ===> ${it.path().get('retweet').value('Message')}" }
+
+10.Add a new user
+g.addV('User').property('User','John Doe')
+
+11. Add a message
+g.addV('Message').property('Message','Hello, Friday!')
+
+12. Johe Doe tweets a message
+g.V().has('Message', 'Hello, Friday!').as('a').V().has('User', 'John Doe').addE('Tweet').to('a').property('Date',createDate(2017,8,18))
+
+13. Make John Doe follow Indiana Jones
+g.V().has('User', 'Indiana Jones').as('a').V().has('User', 'John Doe').addE('Follow').to('a')
