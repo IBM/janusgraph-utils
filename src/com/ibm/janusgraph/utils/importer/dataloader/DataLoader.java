@@ -1,3 +1,18 @@
+/*******************************************************************************
+ *   Copyright 2017 IBM Corp. All Rights Reserved.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ *******************************************************************************/
 package com.ibm.janusgraph.utils.importer.dataloader;
 
 import java.nio.file.Files;
@@ -19,47 +34,47 @@ import com.ibm.janusgraph.utils.importer.util.WorkerPool;
 import com.ibm.janusgraph.utils.importer.vertex.VertexLoaderWorker;
 
 public class DataLoader {
-	private JanusGraph graph;
+    private JanusGraph graph;
 
-	private Logger log = Logger.getLogger(DataLoader.class);
+    private Logger log = Logger.getLogger(DataLoader.class);
 
-	public DataLoader(JanusGraph graph) {
-		this.graph = graph;
-	}
+    public DataLoader(JanusGraph graph) {
+        this.graph = graph;
+    }
 
-	public void loadVertex(String filesDirectory, String mappingFile) throws Exception {
-		loadData(filesDirectory, mappingFile, "vertexMap", (Class) VertexLoaderWorker.class);
-	}
+    public void loadVertex(String filesDirectory, String mappingFile) throws Exception {
+        loadData(filesDirectory, mappingFile, "vertexMap", (Class) VertexLoaderWorker.class);
+    }
 
-	public void loadEdges(String filesDirectory, String mappingFile) throws Exception {
-		loadData(filesDirectory, mappingFile, "edgeMap", (Class) EdgeLoaderWorker.class);
-	}
+    public void loadEdges(String filesDirectory, String mappingFile) throws Exception {
+        loadData(filesDirectory, mappingFile, "edgeMap", (Class) EdgeLoaderWorker.class);
+    }
 
-	public void loadData(String filesDirectory, String mappingFile, String mapToLoad, Class<Worker> workerClass)
-			throws Exception {
-		long startTime = System.nanoTime();
-		log.info("Start loading data for " + mapToLoad);
+    public void loadData(String filesDirectory, String mappingFile, String mapToLoad, Class<Worker> workerClass)
+            throws Exception {
+        long startTime = System.nanoTime();
+        log.info("Start loading data for " + mapToLoad);
 
-		// Read the mapping json
-		String mappingJson = new String(Files.readAllBytes(Paths.get(mappingFile)));
-		JSONObject mapping = new JSONObject(mappingJson);
+        // Read the mapping json
+        String mappingJson = new String(Files.readAllBytes(Paths.get(mappingFile)));
+        JSONObject mapping = new JSONObject(mappingJson);
 
-		JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
-		Iterator<String> keysIter = vertexMap.keys();
+        JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
+        Iterator<String> keysIter = vertexMap.keys();
 
-		int availProcessors = Config.getConfig().getWorkers();
-		try (WorkerPool workers = new WorkerPool(availProcessors, availProcessors * 2)) {
-			while (keysIter.hasNext()) {
-				String fileName = keysIter.next();
-				Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),
-						new TypeToken<HashMap<String, Object>>() {
-						}.getType());
-				new DataFileLoader(graph, workerClass).loadFile(filesDirectory + "/" + fileName, propMapping, workers);
-			}
-		}
+        int availProcessors = Config.getConfig().getWorkers();
+        try (WorkerPool workers = new WorkerPool(availProcessors, availProcessors * 2)) {
+            while (keysIter.hasNext()) {
+                String fileName = keysIter.next();
+                Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),
+                        new TypeToken<HashMap<String, Object>>() {
+                        }.getType());
+                new DataFileLoader(graph, workerClass).loadFile(filesDirectory + "/" + fileName, propMapping, workers);
+            }
+        }
 
-		// log elapsed time in seconds
-		long totalTime = (System.nanoTime() - startTime) / 1000000000;
-		log.info("Loaded " + mapToLoad + " in " + totalTime + " seconds!");
-	}
+        // log elapsed time in seconds
+        long totalTime = (System.nanoTime() - startTime) / 1000000000;
+        log.info("Loaded " + mapToLoad + " in " + totalTime + " seconds!");
+    }
 }
