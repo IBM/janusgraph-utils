@@ -19,7 +19,8 @@ cat <<EOF
 Usage: $0 [options]
 options:
     gencsv    Generate CSV, schema, datamapper
-    import    Import CSV to Janusgraph
+    import    Import CSV to JanusGraph
+    loadsch   Load schema to JanusGraph
 EOF
     exit 1
 }
@@ -54,10 +55,15 @@ case $class in
         shift
         java -cp "$CP":"${utilityJar}" com.ibm.janusgraph.utils.importer.BatchImport "$@"
         ;;
+    loadsch)
+        shift
+        java -cp "$CP":"${utilityJar}" com.ibm.janusgraph.utils.importer.schema.SchemaLoader "$@"
+        ;;
     *)
         usage      # unknown option
         ;;
 esac
 #java -cp $CP:target/JanusGraphBench-0.0.1-SNAPSHOT.jar com.ibm.janusgraph.utils.importer.BatchImport $@
+#java -cp $CP:target/JanusGraphBench-0.0.1-SNAPSHOT.jar com.ibm.janusgraph.utils.importer.schema.SchemaLoader $@
 #java -cp $CP:target/JanusGraphBench-0.0.1-SNAPSHOT.jar com.ibm.janusgraph.utils.generator.JanusGraphBench $@
 
