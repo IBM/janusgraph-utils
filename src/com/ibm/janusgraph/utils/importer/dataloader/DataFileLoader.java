@@ -1,3 +1,18 @@
+/*******************************************************************************
+ *   Copyright 2017 IBM Corp. All Rights Reserved.
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ *******************************************************************************/
 package com.ibm.janusgraph.utils.importer.dataloader;
 
 import java.io.FileReader;
@@ -21,43 +36,43 @@ import com.ibm.janusgraph.utils.importer.util.Worker;
 import com.ibm.janusgraph.utils.importer.util.WorkerPool;
 
 public class DataFileLoader {
-	private JanusGraph graph;
-	private Map<String, Object> propertiesMap;
-	private Class<Worker> workerClass;
+    private JanusGraph graph;
+    private Map<String, Object> propertiesMap;
+    private Class<Worker> workerClass;
 
-	private Logger log = Logger.getLogger(DataFileLoader.class);
+    private Logger log = Logger.getLogger(DataFileLoader.class);
 
-	public DataFileLoader(JanusGraph graph, Class<Worker> workerClass) {
-		this.graph = graph;
-		this.workerClass = workerClass;
-	}
+    public DataFileLoader(JanusGraph graph, Class<Worker> workerClass) {
+        this.graph = graph;
+        this.workerClass = workerClass;
+    }
 
-	private void startWorkers(Iterator<CSVRecord> iter, long targetRecordCount, WorkerPool workers)
-			throws Exception {
-		while (iter.hasNext()) {
-			long currentRecord = 0;
-			List<Map<String,String>> sub = new ArrayList<Map<String,String>>(); 
-			while (iter.hasNext() && currentRecord < targetRecordCount) {
-				sub.add(iter.next().toMap());
-				currentRecord++;
-			}
-			Constructor<Worker> constructor = workerClass.getConstructor(Iterator.class, Map.class, JanusGraph.class);
-			Worker worker = constructor.newInstance(sub.iterator(), propertiesMap, graph);
-			workers.submit(worker);
-		}
-	}
+    private void startWorkers(Iterator<CSVRecord> iter, long targetRecordCount, WorkerPool workers) throws Exception {
+        while (iter.hasNext()) {
+            long currentRecord = 0;
+            List<Map<String, String>> sub = new ArrayList<Map<String, String>>();
+            while (iter.hasNext() && currentRecord < targetRecordCount) {
+                sub.add(iter.next().toMap());
+                currentRecord++;
+            }
+            Constructor<Worker> constructor = workerClass.getConstructor(Iterator.class, Map.class, JanusGraph.class);
+            Worker worker = constructor.newInstance(sub.iterator(), propertiesMap, graph);
+            workers.submit(worker);
+        }
+    }
 
-	public void loadFile(String fileName, Map<String, Object> propertiesMap, WorkerPool workers) throws Exception {
-		log.info("Loading " + fileName);
-//		long linesCount = BatchHelper.countLines(fileName);
+    public void loadFile(String fileName, Map<String, Object> propertiesMap, WorkerPool workers) throws Exception {
+        log.info("Loading " + fileName);
+        // long linesCount = BatchHelper.countLines(fileName);
 
-		this.propertiesMap = propertiesMap;
+        this.propertiesMap = propertiesMap;
 
-		Reader in = new FileReader(fileName);
-		Iterator<CSVRecord> iter = CSVFormat.EXCEL.withHeader().parse(in).iterator();
-//		long freeMemory = Runtime.getRuntime().freeMemory()/1024/1024;
-		// TODO Calculate targetThreadCount using the free memory and number of threads to execute
-		//Max record count per thread
-		startWorkers(iter, Config.getConfig().getWorkersTargetRecordCount(), workers);
-	}
+        Reader in = new FileReader(fileName);
+        Iterator<CSVRecord> iter = CSVFormat.EXCEL.withHeader().parse(in).iterator();
+        // long freeMemory = Runtime.getRuntime().freeMemory()/1024/1024;
+        // TODO Calculate targetThreadCount using the free memory and number of threads
+        // to execute
+        // Max record count per thread
+        startWorkers(iter, Config.getConfig().getWorkersTargetRecordCount(), workers);
+    }
 }

@@ -1,3 +1,5 @@
+language: java
+
 sudo: required
 
 services:
@@ -5,3 +7,9 @@ services:
 
 script:
     - ./test/test.sh
+
+addons:
+    apt:
+        packages:
+        - shellcheck
+        - maven
