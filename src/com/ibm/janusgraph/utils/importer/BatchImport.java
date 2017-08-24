@@ -26,12 +26,13 @@ public class BatchImport {
 
         if (null == args || args.length < 4) {
             System.err.println(
-                    "Usage: BatchImport <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>");
+                    "Usage: BatchImport <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json> [skipSchema]");
             System.exit(1);
         }
 
         JanusGraph graph = JanusGraphFactory.open(args[0]);
-        new SchemaLoader().loadSchema(graph, args[2]);
+        if (!(args.length > 4 && args[4].equals("skipSchema")))
+            new SchemaLoader().loadSchema(graph, args[2]);
         new DataLoader(graph).loadVertex(args[1], args[3]);
         new DataLoader(graph).loadEdges(args[1], args[3]);
         graph.close();
