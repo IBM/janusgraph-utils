@@ -15,13 +15,9 @@
  *******************************************************************************/
 package com.ibm.janusgraph.utils.importer.schema;
 
-import java.io.File;
-import java.lang.reflect.Method;
-
+import com.ibm.janusgraph.utils.schema.JanusGraphSONSchema;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
-
-import groovy.lang.GroovyClassLoader;
 
 public class SchemaLoader {
 
@@ -29,19 +25,8 @@ public class SchemaLoader {
     }
 
     public void loadSchema(JanusGraph g, String schemaFile) throws Exception {
-        GroovyClassLoader gcl = new GroovyClassLoader();
-        Class<?> groovyclass = gcl.parseClass(new File("src/JanusGraphModelImporter.groovy"));
-
-        Object scriptInstance = groovyclass.newInstance();
-
-        Class<?>[] args = new Class[2];
-        args[0] = JanusGraph.class;
-        args[1] = String.class;
-
-        Method m = scriptInstance.getClass().getMethod("writeGraphSONModel", args);
-        m.invoke(scriptInstance, g, schemaFile);
-        gcl.close();
-
+        JanusGraphSONSchema importer = new JanusGraphSONSchema(g);
+        importer.readFile(schemaFile);
     }
 
     public static void main(String[] args) {

@@ -14,7 +14,7 @@
  *    limitations under the License.
  *******************************************************************************/
 
-:load files/src/JanusGraphSchemaImporter.groovy
+:load files/groovy/JanusGraphSchemaImporter.groovy
 
 graph = JanusGraphFactory.open('conf/janusgraph-berkeleyje.properties')
 writeGraphSONSchema(graph, 'files/samples/schema.json')
