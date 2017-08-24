@@ -300,7 +300,7 @@ class VertexCentricIndexBean {
 }
 
 /**
- * represents the whole GraphSON document. It contains:
+ * Represents the whole GraphSON document. It contains:
  * - propertyKeys
  * - vertexLabels
  * - edgeLabels
@@ -308,7 +308,7 @@ class VertexCentricIndexBean {
  * - edgeIndexes
  * - vertexCentricIndexes
  */
-class GraphModel {
+class GraphSchema {
     List<PropertyKeyBean> propertyKeys;
     List<VertexLabelBean> vertexLabels;
     List<EdgeLabelBean> edgeLabels;
@@ -357,16 +357,16 @@ class GraphModel {
 }
 
 /**
- * A utility class to read GraphSON model document and write to JanusGraph
+ * A utility class to read GraphSON schema document and write to JanusGraph
  */
-class JanusGraphSONModel {
+class JanusGraphSONSchema {
     StandardJanusGraph graph
 
     /**
-     * Constructor of JanusGraphSONModel object with the {@code graph}
+     * Constructor of JanusGraphSONSchema object with the {@code graph}
      * @param graph a JanusGraph and write GraphSON schema into it
      */
-    public JanusGraphSONModel(JanusGraph graph) {
+    public JanusGraphSONSchema(JanusGraph graph) {
         if (!graph) {
             throw new Exception("JanusGraph is null")
         }
@@ -374,16 +374,16 @@ class JanusGraphSONModel {
     }
 
     /**
-     * Read the GraphSON schema document from {@code modelFile}
+     * Read the GraphSON schema document from {@code schemaFile}
      * and write to the JanusGraph
-     * @param modelFile GraphSON model document and using
+     * @param schemaFile GraphSON schema document and using
      *        IBM Graph GraphSON format.
      */
-    public void readFile(String modelFile) {
+    public void readFile(String schemaFile) {
         JanusGraphManagement mgmt = graph.openManagement()
 
         try {
-            parse(modelFile)
+            parse(schemaFile)
                 .make(mgmt)
             rollbackTxs(graph)
         } catch (Exception e) {
@@ -434,20 +434,20 @@ class JanusGraphSONModel {
     }
 
     /**
-     * Parse the GraphSON document and return a GraphModel object
+     * Parse the GraphSON document and return a GraphSchema object
      * if parse successes
      * @param gsonSchemaFile
      * @return
      */
-    public static GraphModel parse(String modelFile) {
-        File gsonFile = new File(modelFile)
+    public static GraphSchema parse(String schemaFile) {
+        File gsonFile = new File(schemaFile)
 
         if (!gsonFile.exists()) {
-            throw new Exception("file not found:" + modelFile)
+            throw new Exception("file not found:" + schemaFile)
         }
 
         ObjectMapper mapper = new ObjectMapper()
-        return mapper.readValue(gsonFile, GraphModel.class)
+        return mapper.readValue(gsonFile, GraphSchema.class)
     }
 
     void make(List<ObjectNode> nodes, String name, Closure check, Closure exist, Closure create) {
@@ -463,14 +463,14 @@ class JanusGraphSONModel {
 }
 
 /**
- * parse the GraphSON model in {@code schema} and write to
+ * parse the GraphSON schema in {@code schema} and write to
  * {@code graph}
  * @param graph a valid JanusGraph instance
- * @param schema GraphSON model document location
+ * @param schema GraphSON schema document location
  * @return
  */
-def writeGraphSONModel(JanusGraph graph, String schema) {
-    JanusGraphSONModel importer = new JanusGraphSONModel(graph)
+def writeGraphSONSchema(JanusGraph graph, String schema) {
+    JanusGraphSONSchema importer = new JanusGraphSONSchema(graph)
     importer.readFile(schema)
 }
 
@@ -483,5 +483,5 @@ def updateCompositeIndexState(JanusGraph graph, String name, SchemaAction newSta
     }
     mgmt.updateIndex(index, newState)
     mgmt.commit()
-    JanusGraphSONModel.rollbackTxs(graph)
+    JanusGraphSONSchema.rollbackTxs(graph)
 }
