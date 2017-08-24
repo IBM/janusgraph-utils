@@ -19,10 +19,10 @@ set -e
 
 find . -name '*.sh' -exec shellcheck {} +
 
-echo "verify JanusGraphModelImporter"
+echo "verify JanusGraphSchemaImporter"
 mkdir files && cp -r samples files/ && cp -r test files/ && cp -r src files/ \
     && docker run --rm -ti -v "$(pwd)"/files:/home/janusgraph/janusgraph/files \
-        yihongwang/janusgraph-console bin/gremlin.sh -e files/test/ModelImporterTest.groovy \
+        yihongwang/janusgraph-console bin/gremlin.sh -e files/test/SchemaImporterTest.groovy \
     && rm -rf files
 
 echo "verify Data generator"

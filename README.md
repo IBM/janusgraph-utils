@@ -2,9 +2,9 @@
 
 Provide several utility tools that could be used for Janusgraph, including:
 
-- JanusGraphModelImporter: a groovy script that imports GraphSON schema document into JanusGraph
-- Synthetic data generator: a tools for generating synthetic data in CVS format
-- Data importor: a tool to import data into JanusGraph in CVS format
+- [JanusGraphSchemaImporter](#janusgraphschemaimporter): a groovy script that imports GraphSON schema document into JanusGraph
+- [Synthetic data generator](#synethic-data-generator): a tools for generating synthetic data in CVS format
+- [Data importor](#import-csv-file-to-janusgraph): a tool to import data into JanusGraph in CVS format
 
 ## Download and Build
 
@@ -18,28 +18,28 @@ Use maven to build this project:
 
 `mvn package`
 
-### JanusGraphModelImporter
+### JanusGraphSchemaImporter
 
-This utility read GraphSON model document and write to JanusGraph.
-Please see the sample GraphSON model document under `samples` directory.
+This utility read GraphSON schema document and write to JanusGraph.
+Please see the sample GraphSON schema document under `samples` directory.
 
 Usage:
 ```
 gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
 ==>standardjanusgraph[embeddedcassandra:[127.0.0.1]]
-gremlin> :load JanusGraphModelImporter.groovy
+gremlin> :load JanusGraphSchemaImporter.groovy
 ......
 ......
 ==>true
 ==>true
-gremlin> writeGraphSONModel(graph, 'schema.json')
+gremlin> writeGraphSONSchema(graph, 'schema.json')
 ```
 
 #### How to load the groovy script in gremlin console
 Use the following command to load the utility groovy script into gremlin console:
 
 ```
-gremlin> :load <JanusGraphModelImporter.groovy>
+gremlin> :load <JanusGraphSchemaImporter.groovy>
 ```
 
 Use the `:load` command and specify the groovy script location to load the groovy script.
@@ -55,20 +55,20 @@ scriptEngines: {
   gremlin-groovy: {
     imports: [java.lang.Math],
     staticImports: [java.lang.Math.PI],
-    scripts: [scripts/empty-sample.groovy, scripts/JanusGraphModelImporter.groovy]}}
+    scripts: [scripts/empty-sample.groovy, scripts/JanusGraphSchemaImporter.groovy]}}
 ```
 #### APIs
-Once you load the JanusgraphGSONSchema.groovy into gremlin console, you can use the following APIs:
-- **JanusGraphSONModel.parse(file)**:
-  -  file: a string which points to the schema graphSON document  
+Once you load the JanusGraphSchemaImporter.groovy into gremlin console, you can use the following APIs:
+- **JanusGraphSONSchema.parse(file)**:
+  -  file: a string which points to the GraphSON schema document  
   
-  It parses and retunrs a schema bean object which contains the whole settings of the schema GSON
+  It parses and returns a schema bean object which contains the whole settings of the GSON schema
 
-- **writeGraphSONModel(janusgraph, file)**:
+- **writeGraphSONSchema(janusgraph, file)**:
   - janusgraph: a JanusGraph instance
-  - file: a string which points to the schema graphSON document
+  - file: a string which points to the GraphSON schema document
   
-  It parses the schema GraphSON document and write the definitions of properties, vertices and edges into the janusgraph database.
+  It parses the GraphSON schema document and write the definitions of properties, vertices and edges into the JanusGraph.
   
 - **updateCompositeIndexState(janusgraph, indexName, newState)**:
   - janusgraph: a JanusGraph instance
@@ -82,7 +82,7 @@ Once you load the JanusgraphGSONSchema.groovy into gremlin console, you can use 
 
    It changes the index from its original state into new state if the state transition is valid.
 
-#### The graphSON document
+#### The GraphSON document
 It contains the defintions of properties, vertices and edges:
 
 ```
@@ -195,7 +195,8 @@ Example:
   - columns: may contain any number of columns(property keys)
     - [String]: Name of column
     - dataType: String, Long, Integer,Date
-    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format unless specified in the dateFormat
+    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format
+      unless specified in the dateFormat
     - dateFormat: support JAVA SimpleDateFormat patterns. Default: "dd-MMM-yyyy" 	
     - dataSubType: options are "Name" or "shakespear". This generate some fake data
     - composit: create composit index or not
@@ -203,10 +204,10 @@ Example:
 - EdgeTypes: contains any number of different vertex labels
   - name: change the first edgelabel name
   - columns: may contain any number of columns(edge property keys)
-    - [String]: Name of column 
+    - [String]: Name of column
     - dataType: String, Long, Integer, and Date.
-    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format unless specified in the dateF
-ormat
+    - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format
+      unless specified in the date Format
     - dateFormat: support JAVA SimpleDateFormat patterns. Default: "dd-MMM-yyyy"
     - composit: true or false
     - mixedIndex: any String (default should be "search") 
@@ -231,11 +232,15 @@ In order to use under Linux:
   - `<schema.json>:` JSON file defining the schema of the graph
   - `<data-mapping.json>`: mapping file defining the relationship between the CSV/s fields and the graph
 
-- Example:
- `./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json`
+- Example:  
+ ```
+ ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties \
+     /tmp /tmp/schema.json /tmp/datamapper.json
+ ```
 
 - Using different JanusGraph lib  
-
-  export JANUSGRAPH_HOME=/path-to-your-janusgraph-home
-  ./run.sh import /root/path-to-your-janusgraph-home/conf/janusgraph-cassandra-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
+  ```
+  export JANUSGRAPH_HOME=/path-to-your-janusgraph-home  
+  ./run.sh import /root/path-to-your-janusgraph-home/conf/janusgraph-cassandra-es.properties \
+      /tmp /tmp/schema.json /tmp/datamapper.json
   ```
