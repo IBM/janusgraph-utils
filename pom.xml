@@ -110,8 +110,10 @@
           <filesets>
             <fileset>
                 <directory>${project.build.directory}/groovy</directory>
+                <directory>lib</directory>
               <includes>
                 <include>*.groovy</include>
+                <include>**/</include>
               </includes>
               <followSymlinks>false</followSymlinks>
             </fileset>
