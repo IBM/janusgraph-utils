@@ -26,19 +26,20 @@ run JanusGraphSchemaImporter in two ways:
   After you build the project. You can see the groovy script under `target/groovy` and
   named `JanusGraphSchemaImporter.groovy`  
   Usage:  
-```
-gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
-==>standardjanusgraph[embeddedcassandra:[127.0.0.1]]
-gremlin> :load JanusGraphSchemaImporter.groovy
-......
-......
-==>true
-==>true
-gremlin> writeGraphSONSchema(graph, 'schema.json')
-```  
+  ```
+  gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
+  ==>standardjanusgraph[embeddedcassandra:[127.0.0.1]]
+  gremlin> :load JanusGraphSchemaImporter.groovy
+  ......
+  ......
+  ==>true
+  ==>true
+  gremlin> writeGraphSONSchema(graph, 'schema.json')
+  ```  
   You can find the sample GraphSON schema document under `samples` directory.
 - Using `run.sh` with `loadsch` option to load the schema via JanusGraph Java API.  
-  Usage: `./run.sh loadsch <janusgraph-config-file> <schema-file>`
+  Usage:  
+  `./run.sh loadsch <janusgraph-config-file> <schema-file>`
 
 #### How to load the groovy script in gremlin console
 Use the following command to load the utility groovy script into gremlin console:
@@ -238,11 +239,10 @@ In order to use under Linux:
   - `<data-mapping.json>`: mapping file defining the relationship between the CSV/s fields and the graph
 
 - Example:  
- ```
- ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties \
-     /tmp /tmp/schema.json /tmp/datamapper.json
- ```
-
+  ```
+  ./run.sh import /root/janusgraph-v0.1.1/conf/janusgraph-cassandra-es.properties \
+      /tmp /tmp/schema.json /tmp/datamapper.json
+  ```
 - Using different JanusGraph lib  
   ```
   export JANUSGRAPH_HOME=/path-to-your-janusgraph-home  
