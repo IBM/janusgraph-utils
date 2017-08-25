@@ -65,7 +65,7 @@ public class BatchHelper {
         return dateParser.parse(inputDate);
     }
 
-    public static Object convertPropertyValue(String value, Class dataType) throws ParseException {
+    public static Object convertPropertyValue(String value, Class<?> dataType) throws ParseException {
         Object convertedValue = null;
 
         if (dataType == Integer.class)

@@ -107,13 +107,13 @@ public class GSONUtil {
                                     null, 
                                     null);
         gsonschema.vertexIndexes.add(nodeIdIndex);
-        
+
         //Extract columns under VertexTypes from csv config and add to propertyKeys 
         for (VertexTypeBean type : csvConf.VertexTypes){
             //add vertexLabels
             VertexLabelBean vertexLabel = new VertexLabelBean(type.name);
             gsonschema.vertexLabels.add(vertexLabel);
-            
+
             //add propertyKeys
             for (Entry<String,ColumnBean> col : type.columns.entrySet()){
                 String propertyKeyName = col.getKey();
@@ -121,12 +121,13 @@ public class GSONUtil {
                 boolean compositIndex = col.getValue().composit;
                 String indexOnly = col.getValue().indexOnly;
                 String mixedIndex = col.getValue().mixedIndex;
-                
+
                 //test key does not exist before adding
-                if (! gsonschema.vertexIndexes.contains(propertyKeyName))
+                if (null == gsonschema.getPropertyKey(propertyKeyName)) {
                     gsonschema.propertyKeys.add(
-                    new PropertyKeyBean(propertyKeyName,propertyKeyType));
-                
+                            new PropertyKeyBean(propertyKeyName,propertyKeyType));
+                }
+
                 //add composit vertex indexes if any
                 if(compositIndex == true) {
                     IndexBean index = new IndexBean(
@@ -136,7 +137,7 @@ public class GSONUtil {
                                         false,
                                         indexOnly,
                                         null);
-                    if (! gsonschema.vertexIndexes.contains(index.name)) {
+                    if (null == gsonschema.getVertexIndex(index.name)) {
                         gsonschema.vertexIndexes.add(index);
                     }
                 }
@@ -149,7 +150,7 @@ public class GSONUtil {
                                         false,
                                         indexOnly,
                                         mixedIndex);
-                    if (! gsonschema.vertexIndexes.contains(index.name)) {
+                    if (null == gsonschema.getVertexIndex(index.name)) {
                         gsonschema.vertexIndexes.add(index);
                     }
                 }
@@ -181,7 +182,7 @@ public class GSONUtil {
                                               false,
                                               indexOnly,
                                               mixedIndex);
-                    if (! gsonschema.edgeIndexes.contains(index.name)) {
+                        if (null == gsonschema.getEdgeIndex(index.name)) {
                             gsonschema.edgeIndexes.add(index);
                         }
                     }
@@ -194,7 +195,7 @@ public class GSONUtil {
                                             false,
                                             indexOnly,
                                             mixedIndex);
-                        if (! gsonschema.edgeIndexes.contains(index.name)) {
+                        if (null == gsonschema.getEdgeIndex(index.name)) {
                             gsonschema.edgeIndexes.add(index);
                         }
                     }
