@@ -158,11 +158,6 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.janusgraph</groupId>
-      <artifactId>janusgraph-all</artifactId>
-      <version>0.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
       <version>1.4</version>
@@ -176,6 +171,11 @@
       <groupId>com.github.javafaker</groupId>
       <artifactId>javafaker</artifactId>
       <version>0.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.janusgraph</groupId>
+      <artifactId>janusgraph-all</artifactId>
+      <version>0.1.1</version>
     </dependency>
   </dependencies>
 </project>
