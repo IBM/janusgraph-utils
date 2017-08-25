@@ -18,15 +18,16 @@ package com.ibm.janusgraph.utils.generator.bean;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.RandomUtils;
 
 
 public class CSVIdBean {
     private Map<String, IdRange> idMap = null;
-    private Map<String, Map<String,Integer>> _idMap = null;
+//    private Map<String, Map<String,Integer>> _idMap = null;
     
     public CSVIdBean(List<VertexTypeBean> vertexTypes){
-        this.idMap = new HashMap();
+        this.idMap = new HashMap<String, IdRange>();
         int bot = 0;
         int top = 0;
         for (VertexTypeBean vertexType: vertexTypes){

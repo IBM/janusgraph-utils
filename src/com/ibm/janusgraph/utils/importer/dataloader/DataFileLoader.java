@@ -22,16 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Spliterator;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
 
-import com.ibm.janusgraph.utils.importer.util.BatchHelper;
 import com.ibm.janusgraph.utils.importer.util.Config;
-import com.ibm.janusgraph.utils.importer.util.Constants;
 import com.ibm.janusgraph.utils.importer.util.Worker;
 import com.ibm.janusgraph.utils.importer.util.WorkerPool;
 

@@ -16,6 +16,7 @@
 package com.ibm.janusgraph.utils.generator.bean;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -26,5 +27,49 @@ public class GSONSchema{
     public List<IndexBean> vertexIndexes= new ArrayList<IndexBean>();
     public List<IndexBean> edgeIndexes= new ArrayList<IndexBean>();
     public List<VertexCentricIndexBean> vertexCentricIndexes= new ArrayList<VertexCentricIndexBean>();
-    
+
+    /**
+     * Search property by name
+     * @param name property name
+     * @return the corresponding PropertyKeyBean or null
+     */
+    public PropertyKeyBean getPropertyKey(String name) {
+        for (Iterator<PropertyKeyBean> iterator = propertyKeys.iterator(); iterator.hasNext();) {
+            PropertyKeyBean propertyKeyBean = iterator.next();
+            if (propertyKeyBean.name.equals(name)) {
+                return propertyKeyBean;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Search VertexIndex by index name
+     * @param indexName the index name
+     * @return the corresponding IndexBean or null
+     */
+    public IndexBean getVertexIndex(String indexName) {
+        for (Iterator<IndexBean> iterator = vertexIndexes.iterator(); iterator.hasNext();) {
+            IndexBean indexBean = iterator.next();
+            if (indexBean.name.equals(indexName)) {
+                return indexBean;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Search EdgeIndex by index name
+     * @param indexName the index name
+     * @return the corresponding IndexBean or null
+     */
+    public IndexBean getEdgeIndex(String indexName) {
+        for (Iterator<IndexBean> iterator = edgeIndexes.iterator(); iterator.hasNext();) {
+            IndexBean indexBean = iterator.next();
+            if (indexBean.name.equals(indexName)) {
+                return indexBean;
+            }
+        }
+        return null;
+    }
 }

@@ -18,7 +18,6 @@ package com.ibm.janusgraph.utils.importer.util;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.csv.CSVRecord;
 import org.janusgraph.core.JanusGraph;
 
 public abstract class Worker implements Runnable {

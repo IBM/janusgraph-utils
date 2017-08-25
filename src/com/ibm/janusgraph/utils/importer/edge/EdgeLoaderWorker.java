@@ -69,7 +69,6 @@ public class EdgeLoaderWorker extends Worker {
         }
 
         // Get the left and right edge labels
-
         Map<String, String> leftEdge = (Map<String, String>) getPropertiesMap().get(Constants.EDGE_LEFT_MAPPING);
         String leftEdgeFieldName = leftEdge.keySet().iterator().next();
         String leftVertex = leftEdge.get(leftEdgeFieldName);
