@@ -57,6 +57,67 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>addSources</goal>
+              <goal>generateStubs</goal>
+              <goal>compile</goal>
+              <goal>removeStubs</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sources>
+            <source>
+              <directory>${project.basedir}/src/com/ibm/janusgraph/utils</directory>
+              <includes>
+                <include>**/*.groovy</include>
+              </includes>
+            </source>
+          </sources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.2</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <ignoreMissingFile>true</ignoreMissingFile>
+          <file>src/com/ibm/janusgraph/utils/schema/JanusGraphSchemaImporter.groovy</file>
+          <outputFile>${project.build.directory}/groovy/JanusGraphSchemaImporter.groovy</outputFile>
+          <regex>false</regex>
+          <token>package com.ibm.janusgraph.utils.schema</token>
+          <value></value>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+          <configuration>
+          <filesets>
+            <fileset>
+                <directory>${project.build.directory}/groovy</directory>
+              <includes>
+                <include>*.groovy</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>

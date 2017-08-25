@@ -20,10 +20,12 @@ Use maven to build this project:
 
 ### JanusGraphSchemaImporter
 
-This utility read GraphSON schema document and write to JanusGraph.
-Please see the sample GraphSON schema document under `samples` directory.
-
-Usage:
+This utility read GraphSON schema document and write to JanusGraph. You can
+run JanusGraphSchemaImporter in two ways:
+- Using groovy script in JanusGraph gremlin console:  
+  After you build the project. You can see the groovy script under `target/groovy` and
+  named `JanusGraphSchemaImporter.groovy`  
+  Usage:  
 ```
 gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
 ==>standardjanusgraph[embeddedcassandra:[127.0.0.1]]
@@ -33,7 +35,10 @@ gremlin> :load JanusGraphSchemaImporter.groovy
 ==>true
 ==>true
 gremlin> writeGraphSONSchema(graph, 'schema.json')
-```
+```  
+  You can find the sample GraphSON schema document under `samples` directory.
+- Using `run.sh` with `loadsch` option to load the schema via JanusGraph Java API.  
+  Usage: `./run.sh loadsch <janusgraph-config-file> <schema-file>`
 
 #### How to load the groovy script in gremlin console
 Use the following command to load the utility groovy script into gremlin console:

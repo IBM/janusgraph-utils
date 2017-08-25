@@ -19,13 +19,14 @@ set -e
 
 find . -name '*.sh' -exec shellcheck {} +
 
+echo "verify Data generator"
+mvn package \
+    && ./run.sh gencsv csv-conf/tiny_config.json /tmp
+
 echo "verify JanusGraphSchemaImporter"
-mkdir files && cp -r samples files/ && cp -r test files/ && cp -r src files/ \
+mkdir files && cp -r samples files/ && cp -r test files/ && cp -r target/groovy/ files/ \
     && docker run --rm -ti -v "$(pwd)"/files:/home/janusgraph/janusgraph/files \
         yihongwang/janusgraph-console bin/gremlin.sh -e files/test/SchemaImporterTest.groovy \
     && rm -rf files
 
-echo "verify Data generator"
 
-mvn package \
-    && ./run.sh gencsv csv-conf/tiny_config.json /tmp
