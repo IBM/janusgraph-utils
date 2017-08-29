@@ -3,39 +3,39 @@
     {
       "name": "User",
       "columns": {
-        "User": {"dataType":"String", "dataSubType":"name", "composit":true}
+        "name": {"dataType":"String", "dataSubType":"name", "composit":true}
       },
       "row": 100
     },
     {
-      "name": "Message",
+      "name": "Tweet",
       "columns": {
-        "Message": {"dataType":"String", "dataSubType":"shakespeare", "composit":true, "mixedIndex":"search"}
+        "text": {"dataType":"String", "dataSubType":"shakespeare", "composit":true, "mixedIndex":"search"}
       },
       "row": 1000
     }
   ],
   "EdgeTypes": [
     {
-      "name": "Follow",
+      "name": "Follows",
       "relations": [
         {"left": "User", "right": "User", "row": 10000, "supernode":{"vertices":1, "edges":500}  }
       ]
     },
     {
-      "name": "Like",
+      "name": "Likes",
       "relations": [
-        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500 } }
+        {"left": "User", "right": "Tweet", "row": 10000, "supernode":{"vertices":1, "edges":500 } }
       ]
     },
     {
-      "name": "Retweet",
+      "name": "Retweets",
       "relations": [
-        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500} }
+        {"left": "User", "right": "Tweet", "row": 10000, "supernode":{"vertices":1, "edges":500} }
       ]
     },
     {
-      "name": "Tweet",
+      "name": "Tweets",
       "columns": {
         "Date": {
           "dataType":"Date","composit":true,
@@ -43,13 +43,13 @@
         }
       },
       "relations": [
-        {"left": "User", "right": "Message", "row": 10000, "supernode":{"vertices":1, "edges":500} }
+        {"left": "User", "right": "Tweet", "row": 10000, "supernode":{"vertices":1, "edges":500} }
       ]
     },
     {
-      "name": "Mention",
+      "name": "Mentions",
       "relations": [
-        {"left": "Message", "right": "User", "row": 10000, "supernode":{"vertices":1, "edges":500}}
+        {"left": "Tweet", "right": "User", "row": 10000, "supernode":{"vertices":1, "edges":500}}
       ]
     }
   ]
