@@ -51,11 +51,20 @@ public class CSVGenerator {
     private long[] RANDOM_TIME_RANGE = {(long)0, CURRENT_TIME};
     private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 
+    /**
+     * Initialize csv generator
+     * @param csvConfPath csv config json file
+     */
     public CSVGenerator(String csvConfPath){
         this.csvConf = loadConfig(csvConfPath);
         this.idFactory = new CSVIdBean(csvConf.VertexTypes);
     }
     
+    /**
+     * Generate a record that includes node_id and property key(s)
+     * @param columns a ColumnBean
+     * @return an array containing files for a record
+     */
     private ArrayList<Object> generateOneRecord(Map<String,ColumnBean> columns){
         ArrayList<Object> rec = new ArrayList<Object>();
         
@@ -111,7 +120,27 @@ public class CSVGenerator {
         });
         return rec;
     }
-    
+    /**
+     * Get a random integer without the one(s) in the the ex
+     * @param start min possible value inclusive
+     * @param end max possible value inclusive
+     */
+    public int getRandomIntWithoutExclude(int start, int end, int[] ex) {
+        int rnd = RandomUtils.nextInt(start, end + 1 - ex.length);
+        for (int e : ex) {
+            if (rnd < e) {
+                break;
+            }
+            rnd++;
+        }
+        return rnd;
+    }
+
+    /**
+     * Create csv files for an EdgeType
+     * @param type an edge type
+     * @param outputDirectory the output folder to write the csv file
+     */
     public void writeEdgeCSVs(EdgeTypeBean type, String outputDirectory ){
         ArrayList<String> header = new ArrayList<String>();
         header.add("Left");
@@ -121,9 +150,13 @@ public class CSVGenerator {
         }
         try {
             for (RelationBean relation: type.relations) {
-                /*Ex: /tmp/left-right_E1_edges.csv    */
-                String csvFile = outputDirectory + "/" + relation.left +"-" + relation.right
-                        + "_" + type.name + "_edges.csv";
+                /*Ex: <left-label>_<edgeType>_<right-label>_edges.csv    */
+                String csvFile = outputDirectory + "/" +
+                                    String.join("_",
+                                                relation.left,
+                                                type.name,
+                                                relation.right,
+                                                "edges.csv");
                 CSVPrinter csvFilePrinter = new CSVPrinter(new FileWriter(csvFile), csvFileFormat);
                 csvFilePrinter.printRecord(header);
 
@@ -165,6 +198,11 @@ public class CSVGenerator {
         }
     }
     
+    /**
+     * Create csv files for a VertexType
+     * @param type a vertex type
+     * @param outputDirectory the output folder to write the csv file
+     */
     void writeVertexCSV(VertexTypeBean type, String outputDirectory ){
         String csvFile = outputDirectory + "/" + type.name + ".csv";
         ArrayList<String> header = new ArrayList<String>();
@@ -187,6 +225,10 @@ public class CSVGenerator {
             throw new RuntimeException(e.toString());
         }
     }
+    /**
+     * Create all csv files in Parallel 
+     * @param outputDirectory the output folder to write the csv files
+     */
     public void writeAllCSVs(String outputDirectory){
         for (VertexTypeBean vertex : csvConf.VertexTypes){
             Runnable task = () -> { writeVertexCSV(vertex, outputDirectory);};
@@ -200,6 +242,11 @@ public class CSVGenerator {
         }
     }
     
+    /**
+     * Load a csv config json file to a CSVConfig object
+     * @param jsonConfFile csv config json file name
+     * @return a CSVConfig object
+     */
     static CSVConfig loadConfig(String jsonConfFile){
         ObjectMapper confMapper = new ObjectMapper();
         try {
@@ -211,6 +258,10 @@ public class CSVGenerator {
         }
     }
     
+    /**
+     * validate a csv config file
+     * @param config CSVConfig object
+     */
     public static void isValidConfig(CSVConfig config){
         List<String> typeArray = new ArrayList<String>();
         config.VertexTypes.forEach(vertextype -> typeArray.add(vertextype.name));

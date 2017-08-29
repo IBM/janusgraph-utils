@@ -59,9 +59,9 @@ public class GSONUtil {
         } 
 
     }
-    public static BatchImporterDataMap toDataMap(String csvConfPath){
+    public static BatchImporterDataMap toDataMap(String csvConfigFile){
         BatchImporterDataMap bmDataMap = new BatchImporterDataMap();
-        CSVConfig csvConf = CSVGenerator.loadConfig(csvConfPath);
+        CSVConfig csvConf = CSVGenerator.loadConfig(csvConfigFile);
         for(VertexTypeBean type: csvConf.VertexTypes){
             String vertexFileName = type.name + ".csv";
             VertexMapBean vertex = new VertexMapBean(type.name);
@@ -73,8 +73,12 @@ public class GSONUtil {
         
         for(EdgeTypeBean type: csvConf.EdgeTypes){
             for (RelationBean relation: type.relations) {
-                /*Ex: /tmp/<left-label>-<right-label>_E1_edges.csv    */
-                String edgeFileName = relation.left +"-" + relation.right + "_" + type.name + "_edges.csv";
+                /*Ex: <left-label>_<edgeType>_<right-label>_edges.csv    */
+                String edgeFileName = String.join("_",
+                                                  relation.left,
+                                                  type.name,
+                                                  relation.right,
+                                                  "edges.csv");
                 EdgeMapBean vertex = new EdgeMapBean(type.name);
                 Map<String, String> subMap = new HashMap<>();
                 Map<String, String> subMap2 = new HashMap<>();
