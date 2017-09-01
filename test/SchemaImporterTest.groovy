@@ -17,4 +17,4 @@
 :load files/groovy/JanusGraphSchemaImporter.groovy
 
 graph = JanusGraphFactory.open('conf/janusgraph-berkeleyje.properties')
-writeGraphSONSchema(graph, 'files/samples/schema.json')
+writeGraphSONSchema(graph, 'files/test/schema-importer-testcase.json')
