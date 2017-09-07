@@ -34,6 +34,7 @@ import org.apache.commons.lang3.RandomUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import com.ibm.janusgraph.utils.generator.IdStore.IdBean;
 import com.ibm.janusgraph.utils.generator.bean.CSVConfig;
 import com.ibm.janusgraph.utils.generator.bean.CSVIdBean;
 import com.ibm.janusgraph.utils.generator.bean.ColumnBean;
@@ -71,7 +72,6 @@ public class CSVGenerator {
         columns.forEach( (name, value) -> {
             if (value.dataType.toLowerCase().equals("integer") 
                     || value.dataType.toLowerCase().equals("long")){
-                //rec.add(randomInteger(RANGE[0],RANGE[1],randomInt));
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
             }else if (value.dataType.toLowerCase().equals("date")){
                 if (value.dateFormat != null) {
@@ -95,10 +95,6 @@ public class CSVGenerator {
                         RandomUtils.nextLong(this.RANDOM_TIME_RANGE[0],
                                              this.RANDOM_TIME_RANGE[1]));
                     rec.add(TIME_FORMAT.format(cal.getTime()).toString());
-                //}else {
-                //    rec.add(cal.getTimeInMillis());
-                //}
-                
             }
             else{
                 if ( value.dataSubType != null && value.dataSubType.toLowerCase().equals("name")) {
@@ -121,30 +117,15 @@ public class CSVGenerator {
         return rec;
     }
     /**
-     * Get a random integer without the one(s) in the the ex
-     * @param start min possible value inclusive
-     * @param end max possible value inclusive
-     */
-    public int getRandomIntWithoutExclude(int start, int end, int[] ex) {
-        int rnd = RandomUtils.nextInt(start, end + 1 - ex.length);
-        for (int e : ex) {
-            if (rnd < e) {
-                break;
-            }
-            rnd++;
-        }
-        return rnd;
-    }
-
-    /**
      * Create csv files for an EdgeType
      * @param type an edge type
      * @param outputDirectory the output folder to write the csv file
      */
-    public void writeEdgeCSVs(EdgeTypeBean type, String outputDirectory ){
+    public void writeEdgeCSVs(EdgeTypeBean type, String outputDirectory ) {
         ArrayList<String> header = new ArrayList<String>();
         header.add("Left");
         header.add("Right");
+        IdBean ids;
         if (type.columns != null) {
             header.addAll( type.columns.keySet());
         }
@@ -159,11 +140,11 @@ public class CSVGenerator {
                                                 "edges.csv");
                 CSVPrinter csvFilePrinter = new CSVPrinter(new FileWriter(csvFile), csvFileFormat);
                 csvFilePrinter.printRecord(header);
-
+                IdStore idStore = new IdStore(idFactory, relation, type.multiplicity);
                 for (int i = 0; i < relation.row; i++) {
                     ArrayList<Object> record = new ArrayList<Object>();
-                    record.add(idFactory.getRandomIdForVertexType(relation.left));
-                    record.add(idFactory.getRandomIdForVertexType(relation.right));
+                    ids = idStore.getRandomPairIdForRelation();
+                    record.addAll(ids.toArrayList());
                     if (type.columns != null) {
                         record.addAll(generateOneRecord(type.columns));
                     }
@@ -175,12 +156,11 @@ public class CSVGenerator {
                     int numE = relation.supernode.get("edges");
                     int minId = idFactory.getMinId(relation.left);
                     if (  numSuperV > 0 && numE > 0){
-                        
                         for ( int v = minId; v < minId + numSuperV; v ++){
                             for (int e = 0; e < numE; e++){
                                 ArrayList<Object> record = new ArrayList<Object>();
-                                record.add(v);
-                                record.add(idFactory.getRandomIdForVertexType(relation.right));
+                                ids = idStore.getRandomIdForRelation(v);
+                                record.addAll(ids.toArrayList());
                                 if (type.columns != null) {
                                     record.addAll(generateOneRecord(type.columns));
                                 }
@@ -193,11 +173,9 @@ public class CSVGenerator {
                 System.out.println("Generated edge file: "+ csvFile);
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e.toString());
+            throw new RuntimeException(e);
         }
     }
-    
     /**
      * Create csv files for a VertexType
      * @param type a vertex type
@@ -234,7 +212,6 @@ public class CSVGenerator {
             Runnable task = () -> { writeVertexCSV(vertex, outputDirectory);};
             new Thread(task).start();
         }
-        
         for (EdgeTypeBean edge: csvConf.EdgeTypes){
             Runnable task = () -> { writeEdgeCSVs(edge, outputDirectory);};
             new Thread(task).start();
@@ -259,10 +236,13 @@ public class CSVGenerator {
     }
     
     /**
-     * validate a csv config file
+     * Validates a csv config file
      * @param config CSVConfig object
      */
     public static void isValidConfig(CSVConfig config){
+        //TODO 1. one2one , many2one cannot have supernode
+        //     2. selfRef is only for same left and right vertex types
+        //     3. one2many , one2many cannot have more edges than the right vertex
         List<String> typeArray = new ArrayList<String>();
         config.VertexTypes.forEach(vertextype -> typeArray.add(vertextype.name));
         for (EdgeTypeBean edgeType: config.EdgeTypes){
@@ -273,8 +253,8 @@ public class CSVGenerator {
                             + relation.left + " is not of vertex types: " + typeArray.toString());}
                 if(!typeArray.contains(relation.right))
                     throw new RuntimeException("relationships: "
-                            + relation.right + " is not of vertex types: " + typeArray.toString());        
-                //validate supernode vertice number is less than the total
+                            + relation.right + " is not of vertex types: " + typeArray.toString());
+                //validate supernode vertices don't exceed the number of vertices
                 Iterator<VertexTypeBean> vTypes = config.VertexTypes.iterator();
                 while (vTypes.hasNext()){
                     VertexTypeBean type = vTypes.next();
@@ -290,7 +270,6 @@ public class CSVGenerator {
                                 type.name + "'s row"
                             );
                         } catch (JsonProcessingException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                     }
@@ -298,5 +277,4 @@ public class CSVGenerator {
             }
         }
     }
-
 }

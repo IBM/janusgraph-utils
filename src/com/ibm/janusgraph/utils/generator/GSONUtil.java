@@ -163,7 +163,7 @@ public class GSONUtil {
         
         //extract edge properties from csv config and add to propertyKeys
         for (EdgeTypeBean type : csvConf.EdgeTypes){
-            EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name);
+            EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name, type.multiplicity);
             gsonschema.edgeLabels.add(edgeLabel);
             if (type.columns != null) {
                 //extract columns and add to propertKeys
