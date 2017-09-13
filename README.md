@@ -92,13 +92,15 @@ Run the command in `janusgraph-utils` folder to generate data into `/tmp` folder
 ```
 ./run.sh gencsv csv-conf/twitter-like-w-date.json /tmp
 ```
- Modify generated user file under `/tmp`
+Modify the generated user file under `/tmp` so the sample queries will return with data.
 ```
 sed -i '2s/.*/1,Indiana Jones/' /tmp/User.csv
 ```
 ### 4. Load schema and import data
 
-Run the command in `janusgraph-utils` folder to load schema and import data.
+A graph schema can be loaded from either the Gremlin console or a java utility. You can check the
+doc `doc/users_guide.md` for details. Alternatively, just run one command in `janusgraph-utils` folder to 
+load schema and import data.
 ```
 export JANUSGRAPH_HOME=~/janusgraph
 ./run.sh import ~/janusgraph/conf/janusgraph-cql-es.properties /tmp /tmp/schema.json /tmp/datamapper.json
@@ -112,21 +114,22 @@ cp ~/janusgraph-utils/samples/date-helper.groovy ../../scripts
 cp ../janusgraph-cql-es.properties janusgraph-cql-es-server.properties
 Add a line to janusgraph-cql-es-server.properties, gremlin.graph=org.janusgraph.core.JanusGraphFactory
 cp gremlin-server.yaml rest-gremlin-server.yaml
-Change rest-gremlin-server.yaml
+Change the following four lines in rest-gremlin-server.yaml
 host: x.x.x.x (your server ip)
 channelizer: org.apache.tinkerpop.gremlin.server.channel.HttpChannelizer
 graph: conf/gremlin-server/janusgraph-cql-es-server.properties}
 scripts: [scripts/empty-sample.groovy,scripts/date-helper.groovy]}}
 cd ~/janusgraph; ./bin/gremlin-server.sh ./conf/gremlin-server/rest-gremlin-server.yaml
 ```
-Query and update graph data using REST. Send REST requests using RESTClient in browser with following:
+Now you can query and update graph data using REST. For example, send REST requests using RESTClient 
+in browser with following:
 ```
 Method: POST
 URL: http://x.x.x.x:8182
 Body: {"gremlin":“query_to_run"}
 ```
-Find sample search and insert queries in `samples/twitter-like-queries.txt`
+You can find sample search and insert queries in `samples/twitter-like-queries.txt`
 
 # Sample output
 
-![](doc/source/images/sample_output.png)
+![Sample output for "Find Indiana Jones' tweets that his followers retweeted"](doc/source/images/sample_output.png)
