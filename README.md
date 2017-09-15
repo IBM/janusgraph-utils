@@ -92,7 +92,7 @@ Run the command in `janusgraph-utils` folder to generate data into `/tmp` folder
 ```
 Modify the generated user file under `/tmp` so the sample queries will return with data.
 ```
-sed -i '2s/.*/1,Indiana Jones/' /tmp/User.csv
+sed -i -e '2s/.*/1,Indiana Jones/' /tmp/User.csv
 ```
 ### 4. Load schema and import data
 
