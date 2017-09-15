@@ -33,6 +33,7 @@ import com.ibm.janusgraph.utils.importer.util.BatchHelper;
 import com.ibm.janusgraph.utils.importer.util.Config;
 import com.ibm.janusgraph.utils.importer.util.Constants;
 import com.ibm.janusgraph.utils.importer.util.Worker;
+import com.ibm.janusgraph.utils.importer.util.WorkerListener;
 
 public class EdgeLoaderWorker extends Worker {
     private final UUID myID = UUID.randomUUID();
@@ -164,5 +165,7 @@ public class EdgeLoaderWorker extends Worker {
 
         graphTransaction = null;
         log.info("Finished thread " + myID);
+
+        notifyListener(WorkerListener.State.Done);
     }
 }

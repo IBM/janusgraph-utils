@@ -24,6 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -60,14 +61,23 @@ public class DataLoader {
         String mappingJson = new String(Files.readAllBytes(Paths.get(mappingFile)));
         JSONObject mapping = new JSONObject(mappingJson);
 
-        JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
-        Iterator<String> keysIter = vertexMap.keys();
+        JSONObject nodeMap;
+        try {
+            nodeMap = mapping.getJSONObject(mapToLoad);
+            if (nodeMap == null) {
+                return;
+            }
+        } catch (JSONException e) {
+            return;
+        }
+        
+        Iterator<String> keysIter = nodeMap.keys();
 
         int availProcessors = Config.getConfig().getWorkers();
         try (WorkerPool workers = new WorkerPool(availProcessors, availProcessors * 2)) {
             while (keysIter.hasNext()) {
                 String fileName = keysIter.next();
-                Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),
+                Map<String, Object> propMapping = new Gson().fromJson(nodeMap.getJSONObject(fileName).toString(),
                         new TypeToken<HashMap<String, Object>>() {
                         }.getType());
                 new DataFileLoader(graph, workerClass).loadFile(filesDirectory + "/" + fileName, propMapping, workers);

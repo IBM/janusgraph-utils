@@ -57,6 +57,8 @@ public class DataFileLoader {
             Worker worker = constructor.newInstance(sub.iterator(), propertiesMap, graph);
             workers.submit(worker);
         }
+        //main thread would wait here
+        workers.wait4Finish();
     }
 
     public void loadFile(String fileName, Map<String, Object> propertiesMap, WorkerPool workers) throws Exception {
