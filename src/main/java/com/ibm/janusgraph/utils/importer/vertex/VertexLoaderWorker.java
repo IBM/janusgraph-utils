@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.JanusGraphVertex;
@@ -40,7 +41,7 @@ public class VertexLoaderWorker extends Worker {
     private JanusGraphTransaction graphTransaction;
     private long currentRecord;
 
-    private Logger log = Logger.getLogger(VertexLoaderWorker.class);
+    private static final Logger log = LoggerFactory.getLogger(VertexLoaderWorker.class);
 
     public VertexLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
             final JanusGraph graph) {

@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -41,7 +42,7 @@ public class EdgeLoaderWorker extends Worker {
     private final String defaultEdgeLabel;
     private String edgeLabelFieldName;
 
-    private Logger log = Logger.getLogger(EdgeLoaderWorker.class);
+    private static final Logger log = LoggerFactory.getLogger(EdgeLoaderWorker.class);
     private GraphTraversalSource traversal;
 
     public EdgeLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
