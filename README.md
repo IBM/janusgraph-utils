@@ -30,9 +30,6 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 * [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
 * [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications.
 
-# Watch the Video
-
-![Todo]
 
 # Steps
 ## Run locally
@@ -43,7 +40,8 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 5. [Run interactive remote queries](#5-run-interactive-remote-queries)
 
 ### 1. Install prerequisites
-> NOTE: These prerequisites can be installed on one server.
+> NOTE: These prerequisites can be installed on one server. The instructions are written for Cassandra 3.10 and ElasticSearch 5.3.0. Newer versions
+should work however not tested.
 
 Install Cassandra 3.10 on the storage server. Make the following changes in `/etc/cassandra/cassandra.yaml` and restart Cassandra.
 
