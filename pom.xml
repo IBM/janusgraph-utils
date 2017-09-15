@@ -22,7 +22,6 @@
   <name>janusgraph-utils</name>
   <description>Tools for JanusGraph database</description>
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -74,7 +73,7 @@
         <configuration>
           <sources>
             <source>
-              <directory>${project.basedir}/src/com/ibm/janusgraph/utils</directory>
+              <directory>${project.basedir}/src/main/java/com/ibm/janusgraph/utils</directory>
               <includes>
                 <include>**/*.groovy</include>
               </includes>
@@ -96,7 +95,7 @@
         </executions>
         <configuration>
           <ignoreMissingFile>true</ignoreMissingFile>
-          <file>src/com/ibm/janusgraph/utils/schema/JanusGraphSchemaImporter.groovy</file>
+          <file>src/main/java/com/ibm/janusgraph/utils/schema/JanusGraphSchemaImporter.groovy</file>
           <outputFile>${project.build.directory}/groovy/JanusGraphSchemaImporter.groovy</outputFile>
           <regex>false</regex>
           <token>package com.ibm.janusgraph.utils.schema</token>
@@ -122,40 +121,40 @@
       </plugin>
     </plugins>
     <pluginManagement>
-    	<plugins>
-    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    		<plugin>
-    			<groupId>org.eclipse.m2e</groupId>
-    			<artifactId>lifecycle-mapping</artifactId>
-    			<version>1.0.0</version>
-    			<configuration>
-    				<lifecycleMappingMetadata>
-    					<pluginExecutions>
-    						<pluginExecution>
-    							<pluginExecutionFilter>
-    								<groupId>
-    									org.codehaus.gmavenplus
-    								</groupId>
-    								<artifactId>
-    									gmavenplus-plugin
-    								</artifactId>
-    								<versionRange>[1.5,)</versionRange>
-    								<goals>
-    									<goal>removeStubs</goal>
-    									<goal>generateStubs</goal>
-    									<goal>compile</goal>
-    									<goal>addSources</goal>
-    								</goals>
-    							</pluginExecutionFilter>
-    							<action>
-    								<ignore></ignore>
-    							</action>
-    						</pluginExecution>
-    					</pluginExecutions>
-    				</lifecycleMappingMetadata>
-    			</configuration>
-    		</plugin>
-    	</plugins>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.codehaus.gmavenplus
+                    </groupId>
+                    <artifactId>
+                      gmavenplus-plugin
+                    </artifactId>
+                    <versionRange>[1.5,)</versionRange>
+                    <goals>
+                      <goal>removeStubs</goal>
+                      <goal>generateStubs</goal>
+                      <goal>compile</goal>
+                      <goal>addSources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
     </pluginManagement>
   </build>
   <dependencies>

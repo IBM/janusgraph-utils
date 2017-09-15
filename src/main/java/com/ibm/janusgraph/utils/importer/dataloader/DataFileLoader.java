@@ -25,7 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 
 import com.ibm.janusgraph.utils.importer.util.Config;
@@ -37,7 +38,7 @@ public class DataFileLoader {
     private Map<String, Object> propertiesMap;
     private Class<Worker> workerClass;
 
-    private Logger log = Logger.getLogger(DataFileLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(DataFileLoader.class);
 
     public DataFileLoader(JanusGraph graph, Class<Worker> workerClass) {
         this.graph = graph;

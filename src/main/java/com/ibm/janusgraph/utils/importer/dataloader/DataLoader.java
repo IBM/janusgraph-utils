@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.janusgraph.core.JanusGraph;
 import org.json.JSONObject;
 
@@ -36,7 +37,7 @@ import com.ibm.janusgraph.utils.importer.vertex.VertexLoaderWorker;
 public class DataLoader {
     private JanusGraph graph;
 
-    private Logger log = Logger.getLogger(DataLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(DataLoader.class);
 
     public DataLoader(JanusGraph graph) {
         this.graph = graph;
