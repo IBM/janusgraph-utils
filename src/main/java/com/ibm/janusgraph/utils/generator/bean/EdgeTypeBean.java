@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class EdgeTypeBean {
     public String name = null;
-    public String multiplicity = "MUTI";
+    public String multiplicity = "MULTI";
     public Boolean selfRef = true;
     public Map<String, ColumnBean> columns = null;
     public List<RelationBean> relations = null;
