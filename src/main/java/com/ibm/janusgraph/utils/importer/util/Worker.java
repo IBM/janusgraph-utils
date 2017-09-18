@@ -17,11 +17,15 @@ package com.ibm.janusgraph.utils.importer.util;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.janusgraph.core.JanusGraph;
 
+
 public abstract class Worker implements Runnable {
     private final Iterator<Map<String, String>> records;
+    private List<WorkerListener> listeners = new LinkedList<WorkerListener>();
     private final JanusGraph graph;
     private final Map<String, Object> propertiesMap;
 
@@ -44,4 +48,17 @@ public abstract class Worker implements Runnable {
         return propertiesMap;
     }
 
+    public void addListener(WorkerListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Notify the state change to all listeners
+     * @param state new state
+     */
+    public void notifyListener(WorkerListener.State state) {
+        listeners.forEach(listener -> {
+            listener.notify(this, state);
+        });
+    }
 }

@@ -30,6 +30,7 @@ import com.ibm.janusgraph.utils.importer.util.BatchHelper;
 import com.ibm.janusgraph.utils.importer.util.Config;
 import com.ibm.janusgraph.utils.importer.util.Constants;
 import com.ibm.janusgraph.utils.importer.util.Worker;
+import com.ibm.janusgraph.utils.importer.util.WorkerListener;
 
 public class VertexLoaderWorker extends Worker {
     private final UUID myID = UUID.randomUUID();
@@ -130,6 +131,8 @@ public class VertexLoaderWorker extends Worker {
         graphTransaction.close();
 
         log.info("Finished thread " + myID);
+
+        notifyListener(WorkerListener.State.Done);
     }
 
 }
