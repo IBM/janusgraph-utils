@@ -1,10 +1,10 @@
 # Utility Tools for JanusGraph 
 
-Provide several utility tools that could be used for Janusgraph, including:
+Utility tools that can be used with JanusGraph, including:
 
 - [JanusGraphSchemaImporter](#janusgraphschemaimporter): a groovy script that imports GraphSON schema document into JanusGraph
-- [Synthetic data generator](#synethic-data-generator): a tools for generating synthetic data in CVS format
-- [Data importor](#import-csv-file-to-janusgraph): a tool to import data into JanusGraph in CVS format
+- [Synthetic data generator](#synthetic-data-generator): a tool for generating synthetic data into CSV files
+- [Data importer](#import-csv-file-to-janusgraph): a tool to import data into JanusGraph from CSV files
 
 ## Download and Build
 
@@ -20,11 +20,12 @@ Use maven to build this project:
 
 ### JanusGraphSchemaImporter
 
-This utility read GraphSON schema document and write to JanusGraph. You can
+This utility reads the GraphSON schema document and writes to JanusGraph. You can
 run JanusGraphSchemaImporter in two ways:
 - Using groovy script in JanusGraph gremlin console:  
-  After you build the project. You can see the groovy script under `target/groovy` and
+  After you build the project. You can see the groovy script under `target/groovy`
   named `JanusGraphSchemaImporter.groovy`  
+
   Usage:  
   ```
   gremlin> graph = JanusGraphFactory.open('conf/janusgraph-cassandra-embedded-es.properties')
@@ -37,9 +38,13 @@ run JanusGraphSchemaImporter in two ways:
   gremlin> writeGraphSONSchema(graph, 'schema.json')
   ```  
   You can find the sample GraphSON schema document under `samples` directory.
+
 - Using `run.sh` with `loadsch` option to load the schema via JanusGraph Java API.  
+
   Usage:  
-  `./run.sh loadsch <janusgraph-config-file> <schema-file>`
+  ```
+  ./run.sh loadsch <janusgraph-config-file> <schema-file>
+  ```
 
 #### How to load the groovy script in gremlin console
 Use the following command to load the utility groovy script into gremlin console:
@@ -50,11 +55,11 @@ gremlin> :load <JanusGraphSchemaImporter.groovy>
 
 Use the `:load` command and specify the groovy script location to load the groovy script.
 
-#### How to load the groovy scripto into gremlin server
+#### How to load the groovy script into gremlin server
 Modify the gremlin server configuration file `gremlin-server.yaml` under `janusgraph/conf/gremlin-server` directory. Add the groovy script into
 `scriptEngines.gremlin-groovy.scripts`. Its value is an array and contains
 all groovy scripts that would be loaded into gremlin-groovy script engine when
-gremlin server starts. Here is a sample configruation of `gremlin-server.yaml` (partial):
+gremlin server starts. Here is a sample configuration of `gremlin-server.yaml` (partial):
 
 ```(YAML)
 scriptEngines: {
@@ -68,13 +73,13 @@ Once you load the JanusGraphSchemaImporter.groovy into gremlin console, you can 
 - **JanusGraphSONSchema.parse(file)**:
   -  file: a string which points to the GraphSON schema document  
   
-  It parses and returns a schema bean object which contains the whole settings of the GSON schema
+  Parses the GraphSON schema document and returns a schema bean object which contains the settings of the GSON schema
 
 - **writeGraphSONSchema(janusgraph, file)**:
   - janusgraph: a JanusGraph instance
   - file: a string which points to the GraphSON schema document
   
-  It parses the GraphSON schema document and write the definitions of properties, vertices and edges into the JanusGraph.
+  Parses the GraphSON schema document and writes the definitions of properties, vertices and edges into the JanusGraph.
   
 - **updateCompositeIndexState(janusgraph, indexName, newState)**:
   - janusgraph: a JanusGraph instance
@@ -86,10 +91,10 @@ Once you load the JanusGraphSchemaImporter.groovy into gremlin console, you can 
     - SchemaAction.REINDEX
     - SchemaAction.REMOVE_INDEX
 
-   It changes the index from its original state into new state if the state transition is valid.
+   Changes the index from its original state into new state if the state transition is valid.
 
 #### The GraphSON document
-It contains the defintions of properties, vertices and edges:
+Contains the definitions of properties, vertices and edges:
 
 ```
 {
@@ -107,7 +112,7 @@ kind of object below.
 
 **propertyKeys**
 
-It's an array and contains the definition of the properties. Each property is defined in an object with the following format:
+An array that contains the definition of the properties. Each property is defined in an object with the following format:
 ```
 {
     "name": "<propertyName>",
@@ -118,7 +123,7 @@ It's an array and contains the definition of the properties. Each property is de
 
 **vertexLabels**
 
-It's an array and contains the definition of the vertices. Each vertex is
+An array that contains the definition of the vertices. Each vertex is
 defined in an object with the following format:
 
 ```
@@ -131,7 +136,7 @@ defined in an object with the following format:
 
 **edgeLabels**
 
-It's an array and contains the definition of the edges. Each edge is defined
+An array that contains the definition of the edges. Each edge is defined
 in an object with the following format:
 
 ```
@@ -145,7 +150,7 @@ in an object with the following format:
 
 **vertexIndexes**
 
-It's an array and contains the definition of vertex indices. Each vertex index
+An array that contains the definition of vertex indices. Each vertex index
 is defined in an object with the following format:
 
 ```
@@ -160,7 +165,7 @@ is defined in an object with the following format:
 
 **edgeIndexes**
 
-It's an array and contains the definition of edge indices. Each edge index
+An array that contains the definition of edge indices. Each edge index
 is defined in an object with the following format:
 
 ```
@@ -174,7 +179,7 @@ is defined in an object with the following format:
 
 **vertexCentricIndexes**
 
-It's an array and contains the definition of vertex-centric indices. Each
+An array that contains the definition of vertex-centric indices. Each
 vertex-centric index is defined in an object with the following format:
 
 ```
@@ -187,7 +192,7 @@ vertex-centric index is defined in an object with the following format:
 }
 ```
 
-### Synethic Data Generator
+### Synthetic Data Generator
 #### Generate CSV files, schema, and datamapper
 Generate customized CSV for importing to JanusGraph.
 - Usage:  
@@ -204,7 +209,7 @@ Example:
     - dateRange: default from 1970 to current time in default "dd-MMM-yyyy" format
       unless specified in the dateFormat
     - dateFormat: support JAVA SimpleDateFormat patterns. Default: "dd-MMM-yyyy" 	
-    - dataSubType: options are "Name" or "shakespear". This generate some fake data
+    - dataSubType: options are "Name" or "shakespear". This generates some fake data
     - composit: create composit index or not
     - row: change number of vertex of the named label
 - EdgeTypes: contains any number of different vertex labels

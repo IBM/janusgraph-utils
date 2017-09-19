@@ -41,7 +41,7 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 
 ### 1. Install prerequisites
 > NOTE: These prerequisites can be installed on one server. The instructions are written for Cassandra 3.10 and ElasticSearch 5.3.0. Newer versions
-should work however not tested.
+should work, but might not have been tested.
 
 Install Cassandra 3.10 on the storage server. Make the following changes in `/etc/cassandra/cassandra.yaml` and restart Cassandra.
 
@@ -58,25 +58,27 @@ Install ElasticSearch 5.3.0 on the index server. Make the following changes in `
 network.host: x.x.x.x (your index server ip)
 ```
 
-Install JanusGraph on the graph server
+Install JanusGraph on the graph server:
 * Install java, maven, git
 * Run `git clone https://github.com/JanusGraph/janusgraph.git`
-* Run the following in `janusgraph` folder
+* Run the following commands in the `janusgraph` folder:
 ```
 git checkout 4609b6731a01116e96e554140b37ad589f0ae0ca
 mvn clean install -DskipTests=true
 cp conf/janusgraph-cassandra-es.properties conf/janusgraph-cql-es.properties
-vi conf/janusgraph-cql-es.properties
+```
+* Make the following changes in conf/janusgraph-cql-es.properties:
+```
 storage.backend=cql
 storage.hostname=x.x.x.x (your storage server ip)
 index.search.hostname=x.x.x.x (your index server ip)
 ```
 
-Install a REST client, such as RESTClient add-on for Firefox, on the client machine
+Install a REST client, such as RESTClient add-on for Firefox, on the client machine.
 
 ### 2. Clone the repo
 
-Clone the `janusgraph-utils` on the graph server.
+Clone the `janusgraph-utils` on the graph server and run `mvn package`.
 
 ```
 git clone https://github.com/IBM/janusgraph-utils.git
@@ -97,7 +99,7 @@ sed -i -e '2s/.*/1,Indiana Jones/' /tmp/User.csv
 ### 4. Load schema and import data
 
 A graph schema can be loaded from either the Gremlin console or a java utility. You can check the
-doc `doc/users_guide.md` for details. Alternatively, just run one command in `janusgraph-utils` folder to 
+doc [doc/users_guide.md](doc/users_guide.md) for details. Alternatively, just run one command in `janusgraph-utils` folder to 
 load schema and import data.
 ```
 export JANUSGRAPH_HOME=~/janusgraph
@@ -105,20 +107,34 @@ export JANUSGRAPH_HOME=~/janusgraph
 ```
 
 ### 5. Run interactive remote queries
-Configure and start JanusGraph server by running the following in `~/janusgraph/conf/gremlin-server` folder.
+
+Configure JanusGraph server by running these commands:
 
 ```
+cd ~/janusgraph/conf/gremlin-server
 cp ~/janusgraph-utils/samples/date-helper.groovy ../../scripts 
 cp ../janusgraph-cql-es.properties janusgraph-cql-es-server.properties
-Add a line to janusgraph-cql-es-server.properties, gremlin.graph=org.janusgraph.core.JanusGraphFactory
 cp gremlin-server.yaml rest-gremlin-server.yaml
-Change the following four lines in rest-gremlin-server.yaml
+```
+
+Add this line to janusgraph-cql-es-server.properties:
+```
+gremlin.graph=org.janusgraph.core.JanusGraphFactory
+```
+
+Change the following four lines in rest-gremlin-server.yaml:
+```
 host: x.x.x.x (your server ip)
 channelizer: org.apache.tinkerpop.gremlin.server.channel.HttpChannelizer
 graph: conf/gremlin-server/janusgraph-cql-es-server.properties}
 scripts: [scripts/empty-sample.groovy,scripts/date-helper.groovy]}}
+```
+
+Start JanusGraph server:
+```
 cd ~/janusgraph; ./bin/gremlin-server.sh ./conf/gremlin-server/rest-gremlin-server.yaml
 ```
+
 Now you can query and update graph data using REST. For example, send REST requests using RESTClient 
 in browser with following:
 ```
@@ -126,7 +142,7 @@ Method: POST
 URL: http://x.x.x.x:8182
 Body: {"gremlin":“query_to_run"}
 ```
-You can find sample search and insert queries in `samples/twitter-like-queries.txt`
+You can find sample search and insert queries in [samples/twitter-like-queries.txt](samples/twitter-like-queries.txt).
 
 # Sample output
 
