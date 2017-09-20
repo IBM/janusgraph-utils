@@ -54,8 +54,6 @@ public class DataLoader {
 
     public void loadData(String filesDirectory, String mappingFile, String mapToLoad, Class<Worker> workerClass)
             throws Exception {
-        long startTime = System.nanoTime();
-        log.info("Start loading data for " + mapToLoad);
 
         // Read the mapping json
         String mappingJson = new String(Files.readAllBytes(Paths.get(mappingFile)));
@@ -70,22 +68,30 @@ public class DataLoader {
         } catch (JSONException e) {
             return;
         }
-        
+
         Iterator<String> keysIter = nodeMap.keys();
 
         int availProcessors = Config.getConfig().getWorkers();
-        try (WorkerPool workers = new WorkerPool(availProcessors, availProcessors * 2)) {
+        try (WorkerPool workers = new WorkerPool(
+                graph.configuration(),
+                Config.getConfig().getGraphInstance(),
+                availProcessors, availProcessors * 2)) {
+
+            long startTime = System.nanoTime();
+            log.info("Start loading data for " + mapToLoad);
+
             while (keysIter.hasNext()) {
                 String fileName = keysIter.next();
                 Map<String, Object> propMapping = new Gson().fromJson(nodeMap.getJSONObject(fileName).toString(),
                         new TypeToken<HashMap<String, Object>>() {
                         }.getType());
-                new DataFileLoader(graph, workerClass).loadFile(filesDirectory + "/" + fileName, propMapping, workers);
+                new DataFileLoader(workerClass).loadFile(filesDirectory + "/" + fileName, propMapping, workers);
             }
+            //main thread would wait here
+            workers.wait4Finish();
+            // log elapsed time in seconds
+            long totalTime = (System.nanoTime() - startTime) / 1000000000;
+            log.info("Loaded " + mapToLoad + " in " + totalTime + " seconds!");
         }
-
-        // log elapsed time in seconds
-        long totalTime = (System.nanoTime() - startTime) / 1000000000;
-        log.info("Loaded " + mapToLoad + " in " + totalTime + " seconds!");
     }
 }

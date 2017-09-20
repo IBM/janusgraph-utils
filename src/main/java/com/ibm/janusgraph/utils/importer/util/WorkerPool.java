@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.ibm.janusgraph.utils.importer.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,23 +24,45 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.configuration.Configuration;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.JanusGraphFactory;
+
 public class WorkerPool implements AutoCloseable, WorkerListener {
     private static ExecutorService processor;
-    private static final int sQueueCap = 50;
+    private static final int sQueueCap = 20;
     private LinkedBlockingQueue<Worker> queue = new LinkedBlockingQueue<Worker>(sQueueCap);
     private AtomicInteger workerCounter = new AtomicInteger(0);
     private final long shutdownWaitMS = 10000;
     private Semaphore finished = new Semaphore(1);
     private int numThreads;
+    private List<JanusGraph> graphPool = new ArrayList<JanusGraph>();
+    private Configuration graphCfg;
+    private int graphInstance = 1;
+    private AtomicInteger graphCounter = new AtomicInteger(0);
 
-    public WorkerPool(int numThreads, int maxWorkers) {
+    public WorkerPool(Configuration graphCfg, int graphInstance, int numThreads, int maxWorkers) {
         this.numThreads = numThreads;
         processor = Executors.newFixedThreadPool(numThreads);
+        this.graphInstance = graphInstance;
+        this.graphCfg = graphCfg;
+        for (int i = 0; i < graphInstance; i++) {
+            graphPool.add(JanusGraphFactory.open(this.graphCfg));
+        }
         finished.acquireUninterruptibly();
+    }
+
+    /**
+     * Use the round robin for the JanusGraph instances pool
+     * @return A JanusGraph
+     */
+    public synchronized JanusGraph getGraph() {
+        return graphPool.get(graphCounter.getAndIncrement() % graphInstance);
     }
 
     public void submit(Worker worker) {
         worker.addListener(this);
+        worker.setGraph(getGraph());
         if (workerCounter.get() <= numThreads) {
             workerCounter.incrementAndGet();
             processor.submit(worker);
@@ -76,6 +100,17 @@ public class WorkerPool implements AutoCloseable, WorkerListener {
     @Override
     public void close() throws Exception {
         closeProcessor();
+
+        for (int i = 0; i < graphInstance; i++) {
+            JanusGraph graph = graphPool.get(i);
+            try {
+                graph.tx().commit();
+                graph.close();
+            } catch (Exception e) {
+                // We are going to terminate the WorkerPool
+                // just ignore the exception
+            }
+        }
     }
 
     @Override

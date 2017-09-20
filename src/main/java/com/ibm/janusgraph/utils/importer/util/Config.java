@@ -73,6 +73,10 @@ public class Config {
         return properties == null ? null : new Integer(properties.getProperty("workers", availProcessors));
     }
 
+    public int getGraphInstance() {
+        return properties == null ? 1 : Integer.parseInt(properties.getProperty("graph.instance", "1"));
+    }
+
     public int getVertexRecordCommitCount() {
         return properties == null ? null
                 : new Integer(properties.getProperty("vertex.record_commit_count",

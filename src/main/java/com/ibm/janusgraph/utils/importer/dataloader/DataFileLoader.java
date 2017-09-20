@@ -34,14 +34,12 @@ import com.ibm.janusgraph.utils.importer.util.Worker;
 import com.ibm.janusgraph.utils.importer.util.WorkerPool;
 
 public class DataFileLoader {
-    private JanusGraph graph;
     private Map<String, Object> propertiesMap;
     private Class<Worker> workerClass;
 
     private static final Logger log = LoggerFactory.getLogger(DataFileLoader.class);
 
-    public DataFileLoader(JanusGraph graph, Class<Worker> workerClass) {
-        this.graph = graph;
+    public DataFileLoader(Class<Worker> workerClass) {
         this.workerClass = workerClass;
     }
 
@@ -53,12 +51,10 @@ public class DataFileLoader {
                 sub.add(iter.next().toMap());
                 currentRecord++;
             }
-            Constructor<Worker> constructor = workerClass.getConstructor(Iterator.class, Map.class, JanusGraph.class);
-            Worker worker = constructor.newInstance(sub.iterator(), propertiesMap, graph);
+            Constructor<Worker> constructor = workerClass.getConstructor(Iterator.class, Map.class);
+            Worker worker = constructor.newInstance(sub.iterator(), propertiesMap);
             workers.submit(worker);
         }
-        //main thread would wait here
-        workers.wait4Finish();
     }
 
     public void loadFile(String fileName, Map<String, Object> propertiesMap, WorkerPool workers) throws Exception {

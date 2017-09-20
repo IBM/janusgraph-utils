@@ -18,13 +18,11 @@ package com.ibm.janusgraph.utils.importer.vertex;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.JanusGraphVertex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ibm.janusgraph.utils.importer.util.BatchHelper;
 import com.ibm.janusgraph.utils.importer.util.Config;
@@ -44,9 +42,8 @@ public class VertexLoaderWorker extends Worker {
 
     private static final Logger log = LoggerFactory.getLogger(VertexLoaderWorker.class);
 
-    public VertexLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
-            final JanusGraph graph) {
-        super(records, propertiesMap, graph);
+    public VertexLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap) {
+        super(records, propertiesMap);
 
         this.currentRecord = 0;
         this.defaultVertexLabel = (String) propertiesMap.get(Constants.VERTEX_LABEL_MAPPING);
@@ -116,17 +113,17 @@ public class VertexLoaderWorker extends Worker {
 
         // Start new graph transaction
         graphTransaction = getGraph().newTransaction();
-        getRecords().forEachRemaining(new Consumer<Map<String, String>>() {
-            @Override
-            public void accept(Map<String, String> record) {
-                try {
-                    acceptRecord(record);
-                } catch (Exception e) {
-                    log.error("Thread " + myID + ". Exception during record import.", e);
-                }
-            }
+        
+        Iterator<Map<String, String>> records = getRecords();
 
-        });
+        while (records.hasNext()) {
+            try {
+                acceptRecord(records.next());
+            } catch (Exception e) {
+                log.error("Thread " + myID + ". Exception during record import.", e);
+
+            }
+        }
         graphTransaction.commit();
         graphTransaction.close();
 

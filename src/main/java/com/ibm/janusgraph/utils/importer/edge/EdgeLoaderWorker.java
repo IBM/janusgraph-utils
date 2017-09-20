@@ -18,16 +18,14 @@ package com.ibm.janusgraph.utils.importer.edge;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.SchemaViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ibm.janusgraph.utils.importer.util.BatchHelper;
 import com.ibm.janusgraph.utils.importer.util.Config;
@@ -46,9 +44,8 @@ public class EdgeLoaderWorker extends Worker {
     private static final Logger log = LoggerFactory.getLogger(EdgeLoaderWorker.class);
     private GraphTraversalSource traversal;
 
-    public EdgeLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
-            final JanusGraph graph) {
-        super(records, propertiesMap, graph);
+    public EdgeLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap) {
+        super(records, propertiesMap);
 
         this.currentRecord = 0;
         this.defaultEdgeLabel = (String) propertiesMap.get(Constants.EDGE_LABEL_MAPPING);
@@ -149,17 +146,16 @@ public class EdgeLoaderWorker extends Worker {
         // Start new graph transaction
         graphTransaction = getGraph().newTransaction();
         this.traversal = graphTransaction.traversal();
-        getRecords().forEachRemaining(new Consumer<Map<String, String>>() {
-            @Override
-            public void accept(Map<String, String> record) {
-                try {
-                    acceptRecord(record);
-                } catch (Exception e) {
-                    log.error("Thread " + myID + ". Exception during record import.", e);
-                }
-            }
+        Iterator<Map<String, String>> records = getRecords();
 
-        });
+        while (records.hasNext()) {
+            try {
+                acceptRecord(records.next());
+            } catch (Exception e) {
+                log.error("Thread " + myID + ". Exception during record import.", e);
+
+            }
+        }
         graphTransaction.commit();
         graphTransaction.close();
 

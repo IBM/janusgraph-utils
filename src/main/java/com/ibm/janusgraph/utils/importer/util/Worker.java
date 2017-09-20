@@ -16,9 +16,9 @@
 package com.ibm.janusgraph.utils.importer.util;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.janusgraph.core.JanusGraph;
 
@@ -26,18 +26,21 @@ import org.janusgraph.core.JanusGraph;
 public abstract class Worker implements Runnable {
     private final Iterator<Map<String, String>> records;
     private List<WorkerListener> listeners = new LinkedList<WorkerListener>();
-    private final JanusGraph graph;
+    private JanusGraph graph;
     private final Map<String, Object> propertiesMap;
 
-    public Worker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
-            final JanusGraph graph) {
+    public Worker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap) {
         this.records = records;
-        this.graph = graph;
+        this.graph = null;
         this.propertiesMap = propertiesMap;
     }
 
     public Iterator<Map<String, String>> getRecords() {
         return records;
+    }
+
+    public void setGraph(JanusGraph graph) {
+        this.graph = graph;
     }
 
     public JanusGraph getGraph() {
