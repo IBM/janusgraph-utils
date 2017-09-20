@@ -37,7 +37,7 @@ run JanusGraphSchemaImporter in two ways:
   ==>true
   gremlin> writeGraphSONSchema(graph, 'schema.json')
   ```  
-  You can find the sample GraphSON schema document under `samples` directory.
+  You can find the sample GraphSON schema document under `test` directory.
 
 - Using `run.sh` with `loadsch` option to load the schema via JanusGraph Java API.  
 
