@@ -40,8 +40,7 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 5. [Run interactive remote queries](#5-run-interactive-remote-queries)
 
 ### 1. Install prerequisites
-> NOTE: These prerequisites can be installed on one server. The instructions are written for Cassandra 3.10 and ElasticSearch 5.3.0. Newer versions
-should work, but might not have been tested.
+> NOTE: These prerequisites can be installed on one server. The instructions are written for Cassandra 3.10 and ElasticSearch 5.3.0 on Linux. Newer versions should work, but might not have been tested. The folder structures on Mac can be different. Check Cassandra and ElasticSearch official documentations for details.
 
 Install Cassandra 3.10 on the storage server. Make the following changes in `/etc/cassandra/cassandra.yaml` and restart Cassandra.
 
