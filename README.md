@@ -30,6 +30,9 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 * [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
 * [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications.
 
+# Watch the Video
+
+[![](https://i.ytimg.com/vi/1TQcPWgPvF8/1.jpg?time=1506717509806)](https://www.youtube.com/watch?v=1TQcPWgPvF8)
 
 # Steps
 ## Run locally
