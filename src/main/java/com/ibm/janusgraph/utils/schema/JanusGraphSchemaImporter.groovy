@@ -302,7 +302,7 @@ class VertexCentricIndexBean {
 }
 
 /**
- * Represents the whole GraphSON document. It contains:
+ * Represents the whole graph schema definition. It contains:
  * - propertyKeys
  * - vertexLabels
  * - edgeLabels
@@ -359,14 +359,14 @@ class GraphSchema {
 }
 
 /**
- * A utility class to read GraphSON schema document and write to JanusGraph
+ * A utility class to read graph schema definition and write to JanusGraph
  */
 class JanusGraphSONSchema {
     StandardJanusGraph graph
 
     /**
      * Constructor of JanusGraphSONSchema object with the {@code graph}
-     * @param graph a JanusGraph and write GraphSON schema into it
+     * @param graph a JanusGraph and write graph schema into it
      */
     public JanusGraphSONSchema(JanusGraph graph) {
         if (!graph) {
@@ -376,10 +376,10 @@ class JanusGraphSONSchema {
     }
 
     /**
-     * Read the GraphSON schema document from {@code schemaFile}
+     * Read the graph schema definition from {@code schemaFile}
      * and write to the JanusGraph
-     * @param schemaFile GraphSON schema document and using
-     *        IBM Graph GraphSON format.
+     * @param schemaFile grah schema definition and using
+     *        IBM graph schema format.
      */
     public void readFile(String schemaFile) {
         JanusGraphManagement mgmt = graph.openManagement()
@@ -436,7 +436,7 @@ class JanusGraphSONSchema {
     }
 
     /**
-     * Parse the GraphSON document and return a GraphSchema object
+     * Parse the graph schema definition and return a GraphSchema object
      * if parse successes
      * @param gsonSchemaFile
      * @return
@@ -465,10 +465,10 @@ class JanusGraphSONSchema {
 }
 
 /**
- * parse the GraphSON schema in {@code schema} and write to
+ * parse the graph schema in {@code schema} and write to
  * {@code graph}
  * @param graph a valid JanusGraph instance
- * @param schema GraphSON schema document location
+ * @param schema graph schema definition location
  * @return
  */
 def writeGraphSONSchema(JanusGraph graph, String schema) {

@@ -2,7 +2,7 @@
 
 Utility tools that can be used with JanusGraph, including:
 
-- [JanusGraphSchemaImporter](#janusgraphschemaimporter): a groovy script that imports GraphSON schema document into JanusGraph
+- [JanusGraphSchemaImporter](#janusgraphschemaimporter): a groovy script that imports a graph schema definition, a JSON representation of the JanusGraph schema, into JanusGraph
 - [Synthetic data generator](#synthetic-data-generator): a tool for generating synthetic data into CSV files
 - [Data importer](#import-csv-file-to-janusgraph): a tool to import data into JanusGraph from CSV files
 
@@ -20,7 +20,7 @@ Use maven to build this project:
 
 ### JanusGraphSchemaImporter
 
-This utility reads the GraphSON schema document and writes to JanusGraph. You can
+This utility reads the graph schema definition and writes to JanusGraph. You can
 run JanusGraphSchemaImporter in two ways:
 - Using groovy script in JanusGraph gremlin console:  
   After you build the project. You can see the groovy script under `target/groovy`
@@ -37,7 +37,7 @@ run JanusGraphSchemaImporter in two ways:
   ==>true
   gremlin> writeGraphSONSchema(graph, 'schema.json')
   ```  
-  You can find the sample GraphSON schema document under `test` directory.
+  You can find the sample graph schema definition under `test` directory.
 
 - Using `run.sh` with `loadsch` option to load the schema via JanusGraph Java API.  
 
@@ -71,15 +71,15 @@ scriptEngines: {
 #### APIs
 Once you load the JanusGraphSchemaImporter.groovy into gremlin console, you can use the following APIs:
 - **JanusGraphSONSchema.parse(file)**:
-  -  file: a string which points to the GraphSON schema document  
+  -  file: a string which points to the graph schema definition  
   
-  Parses the GraphSON schema document and returns a schema bean object which contains the settings of the GSON schema
+  Parses the graph schema definition and returns a schema bean object which contains the settings of the GSON schema
 
 - **writeGraphSONSchema(janusgraph, file)**:
   - janusgraph: a JanusGraph instance
-  - file: a string which points to the GraphSON schema document
+  - file: a string which points to the graph schema definition
   
-  Parses the GraphSON schema document and writes the definitions of properties, vertices and edges into the JanusGraph.
+  Parses the graph schema definition and writes the definitions of properties, vertices and edges into the JanusGraph.
   
 - **updateCompositeIndexState(janusgraph, indexName, newState)**:
   - janusgraph: a JanusGraph instance
@@ -93,7 +93,7 @@ Once you load the JanusGraphSchemaImporter.groovy into gremlin console, you can 
 
    Changes the index from its original state into new state if the state transition is valid.
 
-#### The GraphSON document
+#### The graph schema definition
 Contains the definitions of properties, vertices and edges:
 
 ```
