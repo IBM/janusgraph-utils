@@ -1,4 +1,4 @@
-# Develop a scalable graph database app using JanusGraph [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
+# Develop a graph database app using JanusGraph [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
 
 This journey contains sample data and code for running a Twitter-like application in JanusGraph. The utility code illustrates how to use OLTP APIs to define schema, ingest data, and query graph. Developers can use or modify the code to build and operate their custom graph applications, or create similar java and groovy files to interact with JanusGraph.
 
@@ -7,7 +7,7 @@ When the reader has completed this journey, they will understand how to:
 * Load a graph schema from json
 * Import graph data in csv files into JanusGraph database
 * Query and update graph data using Console and REST API
-* Setup and configure a scalable JanusGraph system
+* Setup and configure a distributed JanusGraph system
 
 ![](doc/source/images/architecture.png)
 
