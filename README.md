@@ -1,8 +1,10 @@
-# Develop a graph database app using JanusGraph [![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
+[![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
 
-This journey contains sample data and code for running a Twitter-like application in JanusGraph. The utility code illustrates how to use OLTP APIs to define schema, ingest data, and query graph. Developers can use or modify the code to build and operate their custom graph applications, or create similar java and groovy files to interact with JanusGraph.
+# Develop a graph database app using JanusGraph
 
-When the reader has completed this journey, they will understand how to:
+This Code Pattern contains sample data and code for running a Twitter-like application in JanusGraph. The utility code illustrates how to use OLTP APIs to define schema, ingest data, and query graph. Developers can use or modify the code to build and operate their custom graph applications, or create similar java and groovy files to interact with JanusGraph.
+
+When the reader has completed this Code Pattern, they will understand how to:
 * Generate a synthetic graph dataset
 * Load a graph schema from json
 * Import graph data in csv files into JanusGraph database
@@ -32,7 +34,7 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 
 # Watch the Video
 
-[![](https://i.ytimg.com/vi/1TQcPWgPvF8/1.jpg?time=1506717509806)](https://www.youtube.com/watch?v=1TQcPWgPvF8)
+[![](https://img.youtube.com/vi/1TQcPWgPvF8/0.jpg)](https://www.youtube.com/watch?v=1TQcPWgPvF8)
 
 # Steps
 ## Run locally
@@ -149,3 +151,16 @@ You can find sample search and insert queries in [samples/twitter-like-queries.t
 # Sample output
 
 ![Sample output for "Find Indiana Jones' tweets that his followers retweeted"](doc/source/images/sample_output.png)
+
+# Links
+* [Demo on Youtube](https://www.youtube.com/watch?v=1TQcPWgPvF8): Watch the video.
+* [JanusGraph](http://docs.janusgraph.org/0.1.0-SNAPSHOT/): Learn more about this highly scalable graph database optimized for storing and querying large graphs distributed across a multi-machine cluster.
+* [Data and Analytics Reference Architecture](https://www.ibm.com/cloud/garage/content/architecture/dataAnalyticsArchitecture): Learn how this Journey fits into the Data and Analytics Reference Architecture
+
+# Learn more
+
+* **Data Analytics Code Patterns**: Enjoyed this Code Pattern? Check out our other [Data Analytics Code Patterns](https://developer.ibm.com/code/technologies/data-science/)
+* **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
+
+# License
+[Apache 2.0](LICENSE)
