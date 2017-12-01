@@ -22,7 +22,7 @@ public class EdgeLabelBean{
     public String multiplicity = "MULTI";
     public List<String> signatures;
     public boolean unidirected = false;
-    
+
     public EdgeLabelBean(String name, String multiplicity){
         this.name = name;
         this.multiplicity = multiplicity;

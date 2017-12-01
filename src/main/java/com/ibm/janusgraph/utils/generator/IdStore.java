@@ -42,8 +42,8 @@ public class IdStore {
         this.relation = relation;
         this.multiplicity = multiplicity;
         if (multiplicity.equals("SIMPLE")) {
-            this.simpleStore = new SimpleRelationStore(relation); 
-        }else if (multiplicity.equals("ONE2ONE") 
+            this.simpleStore = new SimpleRelationStore(relation);
+        }else if (multiplicity.equals("ONE2ONE")
                 || multiplicity.equals("MANY2ONE")
                 || multiplicity.equals("ONE2MANY")) {
                 this.generalstore = new RelationStore(relation);
@@ -64,7 +64,7 @@ public class IdStore {
         int end = idBean.getMaxId(vType);
         boolean found = false;
         int rnd = -1;
-        if (ex.size() > (end - start)) 
+        if (ex.size() > (end - start))
             return rnd;
         while (!found) {
             rnd = RandomUtils.nextInt(start, end + 1);
@@ -165,7 +165,7 @@ public class IdStore {
                                             simpleStore.getIds(ids.left));
                 added = simpleStore.put(ids.left, ids.right);
                // System.out.println(String.join(" ","Replaced", Integer.toString(ids.left), Integer.toString(ids.right)));
-            }            
+            }
         }else if(multiplicity.equals("ONE2ONE")) {
             if( ! generalstore.putLeft(ids.left)){
                 ids.left = getRandomIdWithException(relation.left, generalstore.getLeftIds());
@@ -282,7 +282,7 @@ public class IdStore {
             this.left = left;
             this.right = right;
         }
-        /**Generate an array of IDs in the IdBean 
+        /**Generate an array of IDs in the IdBean
          * @return array of IDs in the IdBean
          */
         public ArrayList<Integer>toArrayList(){
@@ -293,7 +293,7 @@ public class IdStore {
         }
     }
     /**
-     * An object to manipulate SIMPLE multiplicity relation 
+     * An object to manipulate SIMPLE multiplicity relation
      */
     class SimpleRelationStore {
         private Map<Integer, HashSet<Integer>> store = new HashMap<Integer, HashSet<Integer>>();

@@ -20,11 +20,11 @@ public class JanusGraphBench {
     public JanusGraphBench(String csvConfPath){
 
     }
-    
+
     static void prepareCSV(String csvConfPath, String outputDirectory){
         CSVGenerator csv = new CSVGenerator(csvConfPath);
         System.out.println("Loaded csv config file: "+ csvConfPath);
-        csv.writeAllCSVs(outputDirectory);  
+        csv.writeAllCSVs(outputDirectory);
     }
 
     public static void main(String[] args) {
@@ -41,6 +41,6 @@ public class JanusGraphBench {
         System.err.println(e.getMessage());
         System.exit(1);
     }
-       
+
     }
 }

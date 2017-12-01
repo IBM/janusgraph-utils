@@ -39,7 +39,7 @@ public class IndexBean{
     public IndexBean(
             String          name,
             List<String>    propertyKeys,
-            boolean         composite, 
+            boolean         composite,
             boolean         unique,
             String          indexOnly,
             String          mixedIndex){
@@ -50,6 +50,6 @@ public class IndexBean{
         this.indexOnly = indexOnly;
         this.mixedIndex = mixedIndex;
     }
-    
-    
+
+
 }

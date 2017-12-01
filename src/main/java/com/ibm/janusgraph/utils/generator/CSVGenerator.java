@@ -60,7 +60,7 @@ public class CSVGenerator {
         this.csvConf = loadConfig(csvConfPath);
         this.idFactory = new CSVIdBean(csvConf.VertexTypes);
     }
-    
+
     /**
      * Generate a record that includes node_id and property key(s)
      * @param columns a ColumnBean
@@ -68,9 +68,9 @@ public class CSVGenerator {
      */
     private ArrayList<Object> generateOneRecord(Map<String,ColumnBean> columns){
         ArrayList<Object> rec = new ArrayList<Object>();
-        
+
         columns.forEach( (name, value) -> {
-            if (value.dataType.toLowerCase().equals("integer") 
+            if (value.dataType.toLowerCase().equals("integer")
                     || value.dataType.toLowerCase().equals("long")){
                 rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
             }else if (value.dataType.toLowerCase().equals("date")){
@@ -152,7 +152,7 @@ public class CSVGenerator {
                 }
                 //add supernodes
                 if (relation.supernode != null){
-                    int numSuperV = relation.supernode.get("vertices"); 
+                    int numSuperV = relation.supernode.get("vertices");
                     int numE = relation.supernode.get("edges");
                     int minId = idFactory.getMinId(relation.left);
                     if (  numSuperV > 0 && numE > 0){
@@ -204,7 +204,7 @@ public class CSVGenerator {
         }
     }
     /**
-     * Create all csv files in Parallel 
+     * Create all csv files in Parallel
      * @param outputDirectory the output folder to write the csv files
      */
     public void writeAllCSVs(String outputDirectory){
@@ -215,10 +215,10 @@ public class CSVGenerator {
         for (EdgeTypeBean edge: csvConf.EdgeTypes){
             Runnable task = () -> { writeEdgeCSVs(edge, outputDirectory);};
             new Thread(task).start();
-            
+
         }
     }
-    
+
     /**
      * Load a csv config json file to a CSVConfig object
      * @param jsonConfFile csv config json file name
@@ -234,7 +234,7 @@ public class CSVGenerator {
             throw new RuntimeException("Fail to parse, read, or evaluate the config JSON. " + e.toString());
         }
     }
-    
+
     /**
      * Validates a csv config file
      * @param config CSVConfig object

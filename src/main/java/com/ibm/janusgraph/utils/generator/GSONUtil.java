@@ -46,7 +46,7 @@ public class GSONUtil {
             throw new RuntimeException("Fail to parse, read, or evaluate the GSON schema. " + e.toString());
         }
     }
-    
+
     public static void writeToFile(String jsonOutputFile,Object gson){
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -56,7 +56,7 @@ public class GSONUtil {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e.toString());
-        } 
+        }
 
     }
     public static BatchImporterDataMap toDataMap(String csvConfigFile){
@@ -70,7 +70,7 @@ public class GSONUtil {
             }
             bmDataMap.vertexMap.put(vertexFileName,vertex.maps);
         }
-        
+
         for(EdgeTypeBean type: csvConf.EdgeTypes){
             for (RelationBean relation: type.relations) {
                 /*Ex: <left-label>_<edgeType>_<right-label>_edges.csv    */
@@ -89,30 +89,30 @@ public class GSONUtil {
                 if (type.columns != null) {
                     for (String key : type.columns.keySet()) {
                         vertex.maps.put(key, key);
-                    } 
+                    }
                 }
             bmDataMap.edgeMap.put(edgeFileName,vertex.maps);
-            }   
+            }
         }
         return bmDataMap;
     }
     public static GSONSchema configToSchema(String csvConfPath){
         GSONSchema gsonschema = new GSONSchema();
         CSVConfig csvConf = CSVGenerator.loadConfig(csvConfPath);
-        
+
         //manually add node_id as a unique propertyKey and index
         PropertyKeyBean nodeIdKey = new PropertyKeyBean("node_id", "Integer");
         gsonschema.propertyKeys.add(nodeIdKey);
         IndexBean nodeIdIndex = new IndexBean(
-                                    "node_id_comp", 
+                                    "node_id_comp",
                                     Arrays.asList("node_id"),
-                                    true, 
-                                    true, 
-                                    null, 
+                                    true,
+                                    true,
+                                    null,
                                     null);
         gsonschema.vertexIndexes.add(nodeIdIndex);
 
-        //Extract columns under VertexTypes from csv config and add to propertyKeys 
+        //Extract columns under VertexTypes from csv config and add to propertyKeys
         for (VertexTypeBean type : csvConf.VertexTypes){
             //add vertexLabels
             VertexLabelBean vertexLabel = new VertexLabelBean(type.name);
@@ -137,7 +137,7 @@ public class GSONUtil {
                     IndexBean index = new IndexBean(
                                         String.join("_", propertyKeyName, "comp"),
                                         Arrays.asList(propertyKeyName),
-                                        compositIndex, 
+                                        compositIndex,
                                         false,
                                         indexOnly,
                                         null);
@@ -160,7 +160,7 @@ public class GSONUtil {
                 }
             }
         }
-        
+
         //extract edge properties from csv config and add to propertyKeys
         for (EdgeTypeBean type : csvConf.EdgeTypes){
             EdgeLabelBean edgeLabel = new EdgeLabelBean(type.name, type.multiplicity);
@@ -203,7 +203,7 @@ public class GSONUtil {
                             gsonschema.edgeIndexes.add(index);
                         }
                     }
-                } 
+                }
             }
         }
         return gsonschema;

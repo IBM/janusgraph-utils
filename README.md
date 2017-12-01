@@ -103,7 +103,7 @@ sed -i -e '2s/.*/1,Indiana Jones/' /tmp/User.csv
 ### 4. Load schema and import data
 
 A graph schema can be loaded from either the Gremlin console or a java utility. You can check the
-doc [doc/users_guide.md](doc/users_guide.md) for details. Alternatively, just run one command in `janusgraph-utils` folder to 
+doc [doc/users_guide.md](doc/users_guide.md) for details. Alternatively, just run one command in `janusgraph-utils` folder to
 load schema and import data.
 ```
 export JANUSGRAPH_HOME=~/janusgraph
@@ -116,7 +116,7 @@ Configure JanusGraph server by running these commands:
 
 ```
 cd ~/janusgraph/conf/gremlin-server
-cp ~/janusgraph-utils/samples/date-helper.groovy ../../scripts 
+cp ~/janusgraph-utils/samples/date-helper.groovy ../../scripts
 cp ../janusgraph-cql-es.properties janusgraph-cql-es-server.properties
 cp gremlin-server.yaml rest-gremlin-server.yaml
 ```
@@ -139,7 +139,7 @@ Start JanusGraph server:
 cd ~/janusgraph; ./bin/gremlin-server.sh ./conf/gremlin-server/rest-gremlin-server.yaml
 ```
 
-Now you can query and update graph data using REST. For example, send REST requests using RESTClient 
+Now you can query and update graph data using REST. For example, send REST requests using RESTClient
 in browser with following:
 ```
 Method: POST

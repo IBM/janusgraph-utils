@@ -21,7 +21,7 @@ g.V().has('name', 'Indiana Jones').out('Tweets').in('Likes').dedup().values('nam
 7. Find Indiana Jones' followers who retweeted his tweets
 g.V().has('name', 'Indiana Jones').in('Follows').as('a').out('Retweets').in('Tweets').has('name', 'Indiana Jones').select('a').values('name').dedup()
 
-8. Find Indiana Jones' tweets that his followers retweeted 
+8. Find Indiana Jones' tweets that his followers retweeted
 g.V().has('name', 'Indiana Jones').in('Follows').out('Retweets').as('a').in('Tweets').has('name', 'Indiana Jones').select('a').by('text').dedup()
 
 9. Find Indiana Jones' followers who retweeted his tweets and the retweeted tweets
