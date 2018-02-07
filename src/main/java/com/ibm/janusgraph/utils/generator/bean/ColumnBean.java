@@ -28,4 +28,5 @@ public class ColumnBean {
     public String dataSubType; //to support sub categories of certain dataTypes
     public Map<String, String> dateRange = null;
     public String dateFormat = null;
+    public String[] options;
 }

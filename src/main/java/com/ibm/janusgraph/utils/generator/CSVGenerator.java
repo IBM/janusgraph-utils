@@ -109,6 +109,12 @@ public class CSVGenerator {
                     roles.put(3, () -> rec.add(faker.shakespeare().kingRichardIIIQuote()));
                     roles.put(4, () -> rec.add(faker.shakespeare().romeoAndJulietQuote()));
                     roles.get(RandomUtils.nextInt(1,5)).run();
+                }else if (value.dataSubType != null && value.dataSubType.toLowerCase().equals("custom") && value.options != null) {
+                    Faker faker = new Faker();
+                    rec.add(faker.options().option(value.options));
+                }else if (value.dataSubType != null && value.dataSubType.toLowerCase().equals("company")) {
+                    Faker faker = new Faker();
+                    rec.add(faker.company().name());
                 }else {
                     rec.add(RandomStringUtils.randomAlphabetic(10));
                 }
