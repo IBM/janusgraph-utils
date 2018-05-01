@@ -48,7 +48,7 @@ public class CSVGenerator {
     private CSVIdBean idFactory = null;
     private Calendar cal = Calendar.getInstance();
     private long CURRENT_TIME = cal.getTimeInMillis();
-    private int[] RANDDOM_INT_RANGE = {100000,99999999};
+    private int[] RANDOM_INT_RANGE = {100000,99999999};
     private long[] RANDOM_TIME_RANGE = {(long)0, CURRENT_TIME};
     private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 
@@ -72,7 +72,15 @@ public class CSVGenerator {
         columns.forEach( (name, value) -> {
             if (value.dataType.toLowerCase().equals("integer")
                     || value.dataType.toLowerCase().equals("long")){
-                rec.add(RandomUtils.nextInt(RANDDOM_INT_RANGE[0],RANDDOM_INT_RANGE[1]));
+                int fromInt, toInt;
+                if (value.intRange != null) {
+                  fromInt = value.intRange.get("from");
+                  toInt = value.intRange.get("to");
+                } else {
+                  fromInt = this.RANDOM_INT_RANGE[0];
+                  toInt = this.RANDOM_INT_RANGE[1];
+                }
+                rec.add(RandomUtils.nextInt(fromInt, toInt));
             }else if (value.dataType.toLowerCase().equals("date")){
                 if (value.dateFormat != null) {
                     this.TIME_FORMAT.applyPattern(value.dateFormat);
