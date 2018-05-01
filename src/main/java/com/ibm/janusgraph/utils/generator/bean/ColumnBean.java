@@ -29,4 +29,5 @@ public class ColumnBean {
     public Map<String, String> dateRange = null;
     public String dateFormat = null;
     public String[] options;
+    public Map<String, Integer> intRange = null;
 }
