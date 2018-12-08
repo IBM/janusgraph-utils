@@ -26,11 +26,11 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 ## Included components
 
 * [Apache Cassandra](http://cassandra.apache.org/): An open source, scalable, high availability database.
-* [JanusGraph](http://janusgraph.org/): A highly scalable graph database optimized for storing and querying large graphs.
+* [JanusGraph](http://janusgraph.org/): A highly scalable graph database optimized for storing and querying large graphs. JanusGraph v0.1.1 was used for this code pattern development and test.
 
 ## Featured technologies
 * [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
-* [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications.
+* [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications. 
 
 # Watch the Video
 
@@ -63,7 +63,7 @@ network.host: x.x.x.x (your index server ip)
 ```
 
 Install JanusGraph on the graph server:
-* Install java, maven, git
+* Install java (1.8), maven (3.3.9, newer should work), git (2.7.5, newer should work)
 * Run `git clone https://github.com/JanusGraph/janusgraph.git`
 * Run the following commands in the `janusgraph` folder:
 ```
