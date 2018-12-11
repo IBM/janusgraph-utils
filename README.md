@@ -30,7 +30,7 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 
 ## Featured technologies
 * [Databases](https://en.wikipedia.org/wiki/IBM_Information_Management_System#.22Full_Function.22_databases): Repository for storing and managing collections of data.
-* [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications. 
+* [Java](https://java.com/en/): A secure, object-oriented programming language for creating applications.
 
 # Watch the Video
 
@@ -161,6 +161,7 @@ You can find sample search and insert queries in [samples/twitter-like-queries.t
 
 * **Data Analytics Code Patterns**: Enjoyed this Code Pattern? Check out our other [Data Analytics Code Patterns](https://developer.ibm.com/code/technologies/data-science/)
 * **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
+* **JanusGraph Performance Evaluation:** [On-boarding with JanusGraph Performance](https://www.slideshare.net/ChinHuang4/onboarding-with-janusgraph-performance).
 
 # License
 This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt).
