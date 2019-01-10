@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
+[![Build Status](https://api.travis-ci.org/IBM/janusgraph-utils.svg?branch=master)](https://travis-ci.org/IBM/janusgraph-utils)
 
 # Develop a graph database app using JanusGraph
 
@@ -25,7 +25,7 @@ Install and configure JanusGraph, Cassandra, ElasticSearch, janusgraph-utils
 
 ## Included components
 
-* [Apache Cassandra](http://cassandra.apache.org/): An open source, scalable, high availability database.
+* [Apache Cassandra](https://cassandra.apache.org/): An open source, scalable, high availability database.
 * [JanusGraph](http://janusgraph.org/): A highly scalable graph database optimized for storing and querying large graphs. JanusGraph v0.1.1 was used for this code pattern development and test.
 
 ## Featured technologies
@@ -154,16 +154,16 @@ You can find sample search and insert queries in [samples/twitter-like-queries.t
 
 # Links
 * [Demo on Youtube](https://www.youtube.com/watch?v=1TQcPWgPvF8): Watch the video.
-* [JanusGraph](http://docs.janusgraph.org/0.1.0-SNAPSHOT/): Learn more about this highly scalable graph database optimized for storing and querying large graphs distributed across a multi-machine cluster.
-* [Data and Analytics Reference Architecture](https://www.ibm.com/cloud/garage/content/architecture/dataAnalyticsArchitecture): Learn how this Journey fits into the Data and Analytics Reference Architecture
+* [JanusGraph](https://docs.janusgraph.org/): Learn more about this highly scalable graph database optimized for storing and querying large graphs distributed across a multi-machine cluster.
+* [Data and Analytics Reference Architecture](https://www.ibm.com/cloud/garage/architectures/dataAnalyticsArchitecture): Learn how this Journey fits into the Data and Analytics Reference Architecture
 
 # Learn more
 
-* **Data Analytics Code Patterns**: Enjoyed this Code Pattern? Check out our other [Data Analytics Code Patterns](https://developer.ibm.com/code/technologies/data-science/)
+* **Data Analytics Code Patterns**: Enjoyed this Code Pattern? Check out our other [Data Analytics Code Patterns](https://developer.ibm.com/technologies/data-science/)
 * **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
 * **JanusGraph Performance Evaluation:** [On-boarding with JanusGraph Performance](https://www.slideshare.net/ChinHuang4/onboarding-with-janusgraph-performance).
 
 # License
-This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](http://www.apache.org/licenses/LICENSE-2.0.txt).
+This code pattern is licensed under the Apache Software License, Version 2.  Separate third party code objects invoked within this code pattern are licensed by their respective providers pursuant to their own separate licenses. Contributions are subject to the [Developer Certificate of Origin, Version 1.1 (DCO)](https://developercertificate.org/) and the [Apache Software License, Version 2](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
-[Apache Software License (ASL) FAQ](http://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
+[Apache Software License (ASL) FAQ](https://www.apache.org/foundation/license-faq.html#WhatDoesItMEAN)
