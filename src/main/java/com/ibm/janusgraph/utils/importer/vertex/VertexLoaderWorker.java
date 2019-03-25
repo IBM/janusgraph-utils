@@ -71,31 +71,38 @@ public class VertexLoaderWorker extends Worker {
             vertexLabel = record.get(vertexLabelFieldName);
         }
         JanusGraphVertex v = graphTransaction.addVertex(vertexLabel);
+		// Removes the vertex in catch block if uniqueness constraint fails for a key and value 
+        try {
+        	// set the properties of the vertex
+        	for (String column : record.keySet()) {
+        		String value = record.get(column);
+        		// If value="" or it is a vertex label then skip it
+        		if (value == null || value.length() == 0 || column.equals(vertexLabelFieldName))
+        			continue;
 
-        // set the properties of the vertex
-        for (String column : record.keySet()) {
-            String value = record.get(column);
-            // If value="" or it is a vertex label then skip it
-            if (value == null || value.length() == 0 || column.equals(vertexLabelFieldName))
-                continue;
+        		String propName = (String) getPropertiesMap().get(column);
+        		if (propName == null) {
+        			// log.info("Thread " + myID + ".Cannot find property name for
+        			// column " + column
+        			// + " in the properties map. Using the column name as
+        			// default.");
+        			continue;
+        			// propName = column;
+        		}
 
-            String propName = (String) getPropertiesMap().get(column);
-            if (propName == null) {
-                // log.info("Thread " + myID + ".Cannot find property name for
-                // column " + column
-                // + " in the properties map. Using the column name as
-                // default.");
-                continue;
-                // propName = column;
-            }
-
-            // Update property only if it does not exist already
-            if (!v.properties(propName).hasNext()) {
-                // TODO Convert properties between data types. e.g. Date
-                Object convertedValue = BatchHelper.convertPropertyValue(value,
-                        graphTransaction.getPropertyKey(propName).dataType());
-                v.property(propName, convertedValue);
-            }
+        		// Update property only if it does not exist already
+        		if (!v.properties(propName).hasNext()) {
+        			// TODO Convert properties between data types. e.g. Date
+        			Object convertedValue = BatchHelper.convertPropertyValue(value,    							
+        					graphTransaction.getPropertyKey(propName).dataType());
+        			v.property(propName, convertedValue);
+        		}
+        	} 
+        } catch (Exception error) {
+        	log.error("Error in acceptRecord:: Vertex:: "+vertexLabel+" :: "+error);
+        	v.remove();
+        	log.info("acceptRecord::Vertex Removed");
+        	return;
         }
 
         if (currentRecord % COMMIT_COUNT == 0) {
